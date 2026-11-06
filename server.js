@@ -58,7 +58,7 @@ const urlOk=s=>/^https?:\/\/[^\s<>"']{3,200}$/i.test(String(s||'').trim())?Strin
 const numIn=(v,min,max,d)=>{const x=v===''||v==null?NaN:+v;return Number.isFinite(x)&&x>=min&&x<=max?x:d};
 const cleanSettings=s=>{s=s||{};return{phone:cl(s.phone,30)||SET_DEF.phone,address:cl(s.address,200)||SET_DEF.address,hours:cl(s.hours,40)||SET_DEF.hours,rating:cl(s.rating,60),telegram:urlOk(s.telegram),instagram:urlOk(s.instagram),yandexKey:cl(s.yandexKey,80).replace(/[^\w-]/g,''),yandexGeoKey:cl(s.yandexGeoKey,80).replace(/[^\w-]/g,''),lat:numIn(s.lat,-90,90,SET_DEF.lat),lng:numIn(s.lng,-180,180,SET_DEF.lng),delFirst:Math.round(numIn(s.delFirst,0,1e6,SET_DEF.delFirst)),delKm:Math.round(numIn(s.delKm,0,1e6,SET_DEF.delKm)),delOn:s.delOn===undefined?SET_DEF.delOn:(s.delOn&&s.delOn!=='0'?1:0),minOn:s.minOn&&s.minOn!=='0'?1:0,minSum:Math.round(numIn(s.minSum,0,1e9,0))}};
 const cleanCats=a=>[...new Set((Array.isArray(a)?a:[]).map(x=>cl(x,30)).filter(Boolean))].slice(0,30);
-let db={menu:seedMenu,cats:cleanCats(seedMenu.map(m=>m.c)),settings:{},orders:[],slides:seedSlides,groups:seedGroups,catimg:{},users:{},stats:{},lastId:1000};
+let db={menu:seedMenu,cats:cleanCats(seedMenu.map(m=>m.c)),settings:{},orders:[],slides:seedSlides,groups:seedGroups,printers:[],catimg:{},users:{},stats:{},lastId:1000};
 const cfgFull=()=>({...SET_DEF,...db.settings});
 const cfgPub=()=>{const c=cfgFull();return{phone:c.phone,address:c.address,hours:c.hours,rating:c.rating,telegram:c.telegram,instagram:c.instagram,yandexKey:c.yandexKey||cl(E.YANDEX_MAPS_KEY,80).replace(/[^\w-]/g,''),lat:c.lat,lng:c.lng,delFirst:c.delFirst,delKm:c.delKm,delOn:c.delOn?1:0,minOn:c.minOn?1:0,minSum:c.minSum||0}};
 // ---- yetkazish: masofa, narx va manzilni aniqlash (Yandex geokoder; kalit boʻlmasa OpenStreetMap) ----
@@ -223,8 +223,45 @@ const okImg=s=>IMG.test(s||'')?s:'';
 const cleanMenu=(m,i)=>({id:Math.floor(+m.id)||Date.now()+i,n:cl(m.n,60),c:cl(m.c,30)||'Boshqa',p:Math.max(0,Math.floor(+m.p)||0),e:cl(m.e,8),u:cl(m.u,12),d:cl(m.d,120),a:m.a?1:0,img:okImg(m.img)});
 const cleanSlide=(s,i)=>({id:Math.floor(+s.id)||Date.now()+i,a:s.a?1:0,bg:['g','o','r','d'].includes(s.bg)?s.bg:'g',e:cl(s.e,12),k:cl(s.k,60),h:cl(s.h,120),p:cl(s.p,260),b:cl(s.b,30),l:/^(#[\w-]*|\/[\w\-\/]*)$/.test(s.l||'')?s.l:'#menu',i1:okImg(s.i1)});
 const cleanGroups=(a,cats)=>{const used=new Set();return(Array.isArray(a)?a:[]).slice(0,30).map(g=>({n:cl(g&&g.n,30),i:okImg(g&&g.i),cats:[...new Set((Array.isArray(g&&g.cats)?g.cats:[]).map(x=>cl(x,30)))].filter(c=>cats.includes(c)&&!used.has(c)&&used.add(c))})).filter(g=>g.n)};
+const cleanPrinters=a=>(Array.isArray(a)?a:[]).slice(0,10).map((p,i)=>({id:cl(p&&p.id,24).replace(/[^\w-]/g,'')||'p'+Date.now().toString(36)+i,n:cl(p&&p.n,40)||'Printer',t:p&&p.t==='browser'?'browser':'lan',ip:cl(p&&p.ip,40).replace(/[^\d.]/g,''),port:Math.min(65535,Math.max(1,Math.floor(+(p&&p.port))||9100)),w:p&&+p.w===80?80:58,c:Math.min(5,Math.max(1,Math.floor(+(p&&p.c))||1)),on:p&&p.on?1:0}));
 const cleanCatImg=(o,cats)=>{const r={};if(o&&typeof o==='object')for(const c of cats){const v=okImg(o[c]);if(v)r[c]=v}return r};
 function gc(){if(SB)return;try{const u=new Set(),add=x=>{const m=/^\/img\/([\w-]+\.jpg)$/.exec(x||'');if(m)u.add(m[1])};db.menu.forEach(m=>add(m.img));db.slides.forEach(s=>add(s.i1));Object.values(db.catimg).forEach(add);db.groups.forEach(g=>add(g.i));for(const f of fs.readdirSync(UP))if(!u.has(f)&&Date.now()-fs.statSync(path.join(UP,f)).mtimeMs>864e5)fs.unlinkSync(path.join(UP,f))}catch(e){console.error('gc:',e.message)}}
+// ---- Printerlar: chek (ESC/POS) tarmoq (LAN) printerga yuboriladi ----
+const net=require('net'),PRLOG=[];
+const CY={А:'A',Б:'B',В:'V',Г:'G',Д:'D',Е:'E',Ё:'Yo',Ж:'J',З:'Z',И:'I',Й:'Y',К:'K',Л:'L',М:'M',Н:'N',О:'O',П:'P',Р:'R',С:'S',Т:'T',У:'U',Ф:'F',Х:'X',Ц:'Ts',Ч:'Ch',Ш:'Sh',Щ:'Sh',Ъ:'',Ы:'I',Ь:'',Э:'E',Ю:'Yu',Я:'Ya',Ў:"O'",Қ:'Q',Ғ:"G'",Ҳ:'H'};
+const lat=t=>String(t==null?'':t).replace(/[ʻʼ‘’`´]/g,"'").replace(/[\u0400-\u04ff]/g,c=>{const u=c.toUpperCase(),m=CY[u];return m===undefined?'':c===u?m:m.toLowerCase()}).normalize('NFKD').replace(/[^\x20-\x7e]/g,'').replace(/\s+/g,' ').trim();
+const privIp=h=>/^(10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.|127\.|169\.254\.|100\.(6[4-9]|[7-9]\d|1[01]\d|12[0-7])\.)/.test(h)&&h.split('.').length===4&&h.split('.').every(x=>x!==''&&+x<=255);
+function receipt(o,p){
+  const W=p.w===80?48:32,B=[],E=b=>B.push(Buffer.from(b)),T=t=>B.push(Buffer.from(t+'\n','latin1'));
+  const num=n=>Number(n).toLocaleString('ru-RU').replace(/\u00a0|\u202f/g,' ');
+  const wrap=(t,ind='')=>{t=lat(t);const r=[];while(t.length>W-ind.length){let k=t.lastIndexOf(' ',W-ind.length);if(k<8)k=W-ind.length;r.push(ind+t.slice(0,k).trim());t=t.slice(k).trim()}if(t)r.push(ind+t);return r};
+  const two=(a,b)=>{a=lat(a);b=lat(b);return a.length+b.length+1>W?a.slice(0,Math.max(1,W-b.length-1))+' '+b:a+' '.repeat(W-a.length-b.length)+b};
+  const hr='-'.repeat(W),d=new Date((o.t||Date.now())+5*3600000),pd=n=>String(n).padStart(2,'0');
+  E([0x1b,0x40,0x1b,0x61,1,0x1b,0x45,1,0x1d,0x21,0x11]);T('SEVIMLI MARKET');E([0x1d,0x21,0,0x1b,0x45,0]);
+  T('Optom oziq-ovqat dokoni');E([0x1b,0x61,0]);T(hr);
+  E([0x1b,0x45,1,0x1d,0x21,0x01]);T('Buyurtma #'+o.id);E([0x1d,0x21,0,0x1b,0x45,0]);
+  T(`${pd(d.getUTCDate())}.${pd(d.getUTCMonth()+1)}.${d.getUTCFullYear()} ${pd(d.getUTCHours())}:${pd(d.getUTCMinutes())}`);T(hr);
+  wrap('Mijoz: '+(o.name||'')).forEach(T);T('Tel: '+lat(o.phone));wrap('Manzil: '+(o.addr||'')).forEach(T);if(o.note)wrap('Izoh: '+o.note).forEach(T);T(hr);
+  for(const i of o.items){wrap(i.n).forEach(T);T(two('  '+i.q+' x '+num(i.p),num(i.p*i.q)))}
+  T(hr);if(o.fee)T(two('Yetkazish'+(o.km?' ('+o.km+' km)':''),num(o.fee)));
+  E([0x1b,0x45,1,0x1d,0x21,0x01]);T(two('JAMI',num(o.total)+" som").slice(0,W));E([0x1d,0x21,0,0x1b,0x45,0]);
+  T('Tolov: '+lat(o.pay||'Naqd'));T(hr);E([0x1b,0x61,1]);T('Xaridingiz uchun rahmat!');E([0x1b,0x61,0,0x1b,0x64,4,0x1d,0x56,0x42,0]);
+  return Buffer.concat(B);
+}
+function sendRaw(ip,port,buf){return new Promise((ok,no)=>{const sk=net.connect({host:ip,port,timeout:4000});let dn=0;const fin=e=>{if(dn)return;dn=true;sk.destroy();e?no(e):ok()};
+  sk.on('connect',()=>sk.write(buf,()=>setTimeout(()=>fin(),400)));sk.on('timeout',()=>fin(new Error('Printer javob bermadi')));
+  sk.on('error',e=>fin(new Error(e.code==='ECONNREFUSED'?'Printer ulanishni rad etdi (port toʻgʻrimi?)':/UNREACH|TIMEDOUT/.test(e.code||'')?'Printerga yetib boʻlmadi (IP manzil yoki tarmoqni tekshiring)':e.message)))})}
+async function printOrder(o,only,auto){
+  const ps=db.printers.filter(p=>p.t==='lan'&&(only?p.id===only:p.on)),out=[];
+  for(const p of ps){
+    let err='';
+    if(!p.ip||!privIp(p.ip))err='Printer IP manzili notoʻgʻri (192.168.x.x koʻrinishida boʻlishi kerak)';
+    else try{const buf=receipt(o,p);for(let k=0;k<p.c;k++)await sendRaw(p.ip,p.port,buf)}catch(e){err=e.message}
+    out.push({n:p.n,ok:!err,err});PRLOG.unshift({t:Date.now(),n:p.n,o:o.id,auto:!!auto,ok:!err,err});if(PRLOG.length>20)PRLOG.pop();
+    if(err)console.error('Printer xatosi ('+p.n+'):',err);
+  }
+  return out;
+}
 // ---- Telegram: bot, tugmalar, Mini App ----
 const tgOn=()=>!!(E.BOT_TOKEN&&CH_A),BOT={un:'',mode:''};
 const TGS=crypto.createHash('sha256').update('wh|'+(E.BOT_TOKEN||'')+'|'+SEC).digest('hex').slice(0,48);
@@ -333,6 +370,7 @@ function panelSet(o,st){
 }
 async function after(o,k){
   await saveOrder(o).catch(e=>console.error('Buyurtmani yangilash xatosi:',e.message));
+  if(k==='acc')printOrder(o,null,true).catch(e=>console.error('Chek chiqarish xatosi:',e.message));
   await Promise.allSettled([renderChats(o),notifyUser(o,k)]);
   if(KEEP===0&&o.st>=3)await purge().catch(()=>{});
 }
@@ -525,7 +563,7 @@ const server=http.createServer(async(req,res)=>{try{
       if(!authed(req))return send(res,401,{error:'Ruxsat yoʻq'});
       const l=Object.values(db.users).sort((a,b)=>b.t1-a.t1);return send(res,200,{total:l.length,users:l.slice(0,500)});
     }
-    if(u==='/api/admin/data')return authed(req)?send(res,200,{menu:db.menu,cats:db.cats,settings:cfgFull(),ymap:!!cfgPub().yandexKey,orders:db.orders.slice(-300),slides:db.slides,catimg:db.catimg,groups:db.groups,tg:{on:tgOn(),courier:!!CH_C,bot:BOT.un,mode:BOT.mode,app:WA},today:statsRange(dkey(Date.now()),dkey(Date.now())).tot,db:SB?'supabase':'local',keep:KEEP}):send(res,401,{error:'Ruxsat yoʻq'});
+    if(u==='/api/admin/data')return authed(req)?send(res,200,{menu:db.menu,cats:db.cats,settings:cfgFull(),ymap:!!cfgPub().yandexKey,orders:db.orders.slice(-300),slides:db.slides,catimg:db.catimg,groups:db.groups,printers:db.printers,prlog:PRLOG,tg:{on:tgOn(),courier:!!CH_C,bot:BOT.un,mode:BOT.mode,app:WA},today:statsRange(dkey(Date.now()),dkey(Date.now())).tot,db:SB?'supabase':'local',keep:KEEP}):send(res,401,{error:'Ruxsat yoʻq'});
     res.writeHead(404,{'content-type':'text/plain; charset=utf-8'});return res.end('404 — sahifa topilmadi');
   }
   if(M!=='POST')return res.writeHead(405).end();
@@ -599,6 +637,18 @@ const server=http.createServer(async(req,res)=>{try{
     const f=crypto.randomBytes(8).toString('hex')+'.jpg';
     try{if(SB)return send(res,200,{url:await sbUpload(f,buf)});fs.writeFileSync(path.join(UP,f),buf);return send(res,200,{url:'/img/'+f})}catch(e){return fail(res,e)}
   }
+  if(u==='/api/admin/printers'&&Array.isArray(b.printers)){
+    const ps=cleanPrinters(b.printers);
+    for(const p of ps)if(p.t==='lan'&&p.on&&!privIp(p.ip))return send(res,400,{error:`“${p.n}”: IP manzil ichki tarmoqniki boʻlishi kerak (masalan 192.168.1.50)`});
+    db.printers=ps;try{await saveK('printers')}catch(e){return fail(res,e)}return send(res,200,{ok:1,printers:db.printers});
+  }
+  if(u==='/api/admin/print'){
+    let o=null;
+    if(b.test)o={id:0,t:Date.now(),name:'Test mijoz',phone:'+998 90 123 45 67',addr:'Test manzil',note:'Bu test chek',items:[{n:'Olma (Samarqand)',q:2,p:14000},{n:'Tandir non',q:3,p:4000}],fee:5000,km:2,total:45000,pay:'Naqd'};
+    else o=db.orders.find(x=>x.id===+b.id);
+    if(!o)return send(res,404,{error:'Buyurtma topilmadi'});
+    return send(res,200,{res:await printOrder(o,b.pid||null,false)});
+  }
   if(u==='/api/admin/ytest'){
     const c=cfgFull(),gk=yKey(c),jk=c.yandexKey||cl(E.YANDEX_MAPS_KEY,80).replace(/[^\w-]/g,'');
     const chk=async url=>{try{const r=await fetch(url,{signal:AbortSignal.timeout(7000),headers:{'user-agent':UA,...yh(url)}}),t=await r.text();return{ok:r.ok,status:r.status,msg:r.ok?'':t.slice(0,160)}}catch(e){return{ok:false,status:0,msg:e.message}}};
@@ -624,6 +674,7 @@ async function boot(){
     const g=k=>{const r=rows.find(x=>x.key===k);return r&&Array.isArray(r.value)?r.value:null};
     for(const k of['menu','slides']){const v=g(k);if(v)db[k]=v;else await saveK(k).catch(e=>console.error('Boshlangʻich maʼlumotni yozib boʻlmadi:',e.message))}
     {const v=g('groups');if(v)db.groups=v}
+    {const v=g('printers');if(v)db.printers=v}
     {const r=rows.find(x=>x.key==='catimg');if(r&&r.value&&typeof r.value==='object'&&!Array.isArray(r.value))db.catimg=r.value}
     {const v=g('cats');if(v)db.cats=cleanCats(v);else{db.cats=cleanCats(db.menu.map(m=>m.c));await saveK('cats').catch(e=>console.error('Boshlangʻich maʼlumotni yozib boʻlmadi:',e.message))}}
     {const r=rows.find(x=>x.key==='settings');if(r&&r.value&&typeof r.value==='object'&&!Array.isArray(r.value))db.settings=cleanSettings(r.value)}
@@ -633,13 +684,13 @@ async function boot(){
     const mt=rows.find(x=>x.key==='meta');db.lastId=Math.max(1000,(mt&&mt.value&&+mt.value.lastId)||0);
     await sbFetch(`${SB.u}/storage/v1/bucket`,{method:'POST',headers:sbh({'content-type':'application/json'}),body:JSON.stringify({id:SB.b,name:SB.b,public:true})},1).catch(()=>{});
     setInterval(()=>sbFetch(`${SB.u}/rest/v1/kv?select=key&limit=1`,{headers:sbh()}).catch(e=>console.error('Supabase keep-alive:',e.message)),6*36e5);
-  }else{try{const d=JSON.parse(fs.readFileSync(DB,'utf8'));for(const k of['menu','slides'])if(Array.isArray(d[k]))db[k]=d[k];db.cats=cleanCats(Array.isArray(d.cats)?d.cats:db.menu.map(m=>m.c));if(Array.isArray(d.groups))db.groups=d.groups;if(d.catimg&&typeof d.catimg==='object')db.catimg=d.catimg;if(d.settings&&typeof d.settings==='object')db.settings=cleanSettings(d.settings);if(d.users&&typeof d.users==='object'&&!Array.isArray(d.users))db.users=d.users;if(d.stats&&typeof d.stats==='object'&&!Array.isArray(d.stats))db.stats=d.stats;if(Array.isArray(d.orders))db.orders=d.orders;db.lastId=Math.max(1000,+d.lastId||0)}catch{}gc()}
+  }else{try{const d=JSON.parse(fs.readFileSync(DB,'utf8'));for(const k of['menu','slides'])if(Array.isArray(d[k]))db[k]=d[k];db.cats=cleanCats(Array.isArray(d.cats)?d.cats:db.menu.map(m=>m.c));if(Array.isArray(d.groups))db.groups=d.groups;if(Array.isArray(d.printers))db.printers=d.printers;if(d.catimg&&typeof d.catimg==='object')db.catimg=d.catimg;if(d.settings&&typeof d.settings==='object')db.settings=cleanSettings(d.settings);if(d.users&&typeof d.users==='object'&&!Array.isArray(d.users))db.users=d.users;if(d.stats&&typeof d.stats==='object'&&!Array.isArray(d.stats))db.stats=d.stats;if(Array.isArray(d.orders))db.orders=d.orders;db.lastId=Math.max(1000,+d.lastId||0)}catch{}gc()}
   for(const m of db.menu)if(!db.cats.includes(m.c))db.cats.push(m.c);
   // eski (Marakand) maʼlumot qolgan boʻlsa — Sevimli Market namunasi bilan almashtiramiz
   if(db.menu.some(m=>m.n==='Osh (palov)')){db.menu=seedMenu;db.cats=cleanCats(seedMenu.map(m=>m.c));db.groups=seedGroups;db.catimg={};if(db.settings&&(db.settings.phone==='1414'||/Navoiy/.test(db.settings.address||'')))db.settings={};for(const k of['menu','cats','groups','catimg','settings'])await saveK(k).catch(()=>{})}
   if(db.slides.some(x=>/Kafemizga|Marakand/i.test((x.h||'')+(x.p||'')))){db.slides=seedSlides;await saveK('slides').catch(()=>{})}
   for(const m of db.menu)if(!db.cats.includes(m.c))db.cats.push(m.c);
-  db.catimg=cleanCatImg(db.catimg,db.cats);db.groups=cleanGroups(db.groups,db.cats);
+  db.catimg=cleanCatImg(db.catimg,db.cats);db.groups=cleanGroups(db.groups,db.cats);db.printers=cleanPrinters(db.printers);
   db.lastId=Math.max(db.lastId,...db.orders.map(o=>+o.id||0),1000);db.orders.forEach(o=>{if(o.st>=3&&!o.done)o.done=Date.now()});
   await purge();setInterval(()=>purge().catch(()=>{}),36e5).unref();
   // Render bepul rejasi 15 daqiqa soʻrovsiz qolsa uxlab qoladi: har 10 daqiqada oʻz manzilimizga soʻrov yuboramiz
