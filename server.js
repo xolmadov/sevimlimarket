@@ -48,16 +48,17 @@ const seedMenu=[
 ['Idish yuvish suyuqligi','Uy-roʻzgʻor',16000,'dona','🧴','500 ml']
 ].map((x,i)=>({id:i+1,n:x[0],c:x[1],p:x[2],u:x[3],e:x[4],d:x[5],a:1,img:''}));
 const seedSlides=[
-{id:1,a:1,bg:'g',e:'🍎🥕🍅',k:'Yangi hosil',h:'Eng *yangi* meva va sabzavotlar',p:'Har kuni yangi keltiriladi. Optom va chakana narxlarda.',b:'Xarid qilish',l:'#menu',i1:''},
-{id:2,a:1,bg:'o',e:'📦',k:'Optom narxlar',h:'Koʻproq oling, *koʻproq* tejang',p:'Un, guruch, yogʻ, shakar va boshqa mahsulotlar optom narxlarda.',b:'Katalogga oʻtish',l:'#menu',i1:''},
-{id:3,a:1,bg:'d',e:'🚚',k:'Yetkazib berish',h:'Buyurtma *eshigingizgacha*',p:'Saytdan buyurtma bering, biz uyingizgacha yetkazib beramiz. Toʻlov naqd.',b:'Buyurtma berish',l:'#menu',i1:''}];
+{id:1,a:1,bg:'g',k:'Yangi hosil',h:'Eng *yangi* meva va sabzavotlar',p:'Har kuni yangi keltiriladi. Optom va chakana narxlarda.',b:'Xarid qilish',l:'#menu',i1:'',e:''},
+{id:2,a:1,bg:'o',k:'Optom narxlar',h:'Koʻproq oling, *koʻproq* tejang',p:'Un, guruch, yogʻ, shakar va boshqa mahsulotlar optom narxlarda.',b:'Katalogga oʻtish',l:'#menu',i1:'',e:''},
+{id:3,a:1,bg:'r',k:'Yetkazib berish',h:'Buyurtma *eshigingizgacha*',p:'Saytdan buyurtma bering, biz uyingizgacha yetkazib beramiz. Toʻlov naqd.',b:'Buyurtma berish',l:'#menu',i1:'',e:''}];
+const seedGroups=[{n:'Meva va sabzavotlar',i:'',cats:['Mevalar','Sabzavotlar']},{n:'Sut va tuxum',i:'',cats:['Sut mahsulotlari']},{n:'Goʻsht va parranda',i:'',cats:['Goʻsht va parranda']},{n:'Non va shirinliklar',i:'',cats:['Non va qandolat','Shirinliklar']},{n:'Bakaleya',i:'',cats:['Un va yormalar','Yogʻ va ziravorlar']},{n:'Ichimliklar',i:'',cats:['Ichimliklar']},{n:'Uy-roʻzgʻor',i:'',cats:['Uy-roʻzgʻor']}];
 // ---- doʻkon maʼlumotlari (admin paneldan oʻzgartiriladi) va kategoriyalar ----
 const SET_DEF={phone:'',address:'Andijon viloyati, Poytugʻ',hours:'08:00 – 22:00',rating:'',telegram:'',instagram:'',lat:40.892109,lng:72.252442,delFirst:5000,delKm:2500,delOn:1,minOn:0,minSum:0,yandexKey:'',yandexGeoKey:''};
 const urlOk=s=>/^https?:\/\/[^\s<>"']{3,200}$/i.test(String(s||'').trim())?String(s).trim():'';
 const numIn=(v,min,max,d)=>{const x=v===''||v==null?NaN:+v;return Number.isFinite(x)&&x>=min&&x<=max?x:d};
 const cleanSettings=s=>{s=s||{};return{phone:cl(s.phone,30)||SET_DEF.phone,address:cl(s.address,200)||SET_DEF.address,hours:cl(s.hours,40)||SET_DEF.hours,rating:cl(s.rating,60),telegram:urlOk(s.telegram),instagram:urlOk(s.instagram),yandexKey:cl(s.yandexKey,80).replace(/[^\w-]/g,''),yandexGeoKey:cl(s.yandexGeoKey,80).replace(/[^\w-]/g,''),lat:numIn(s.lat,-90,90,SET_DEF.lat),lng:numIn(s.lng,-180,180,SET_DEF.lng),delFirst:Math.round(numIn(s.delFirst,0,1e6,SET_DEF.delFirst)),delKm:Math.round(numIn(s.delKm,0,1e6,SET_DEF.delKm)),delOn:s.delOn===undefined?SET_DEF.delOn:(s.delOn&&s.delOn!=='0'?1:0),minOn:s.minOn&&s.minOn!=='0'?1:0,minSum:Math.round(numIn(s.minSum,0,1e9,0))}};
 const cleanCats=a=>[...new Set((Array.isArray(a)?a:[]).map(x=>cl(x,30)).filter(Boolean))].slice(0,30);
-let db={menu:seedMenu,cats:cleanCats(seedMenu.map(m=>m.c)),settings:{},orders:[],slides:seedSlides,catimg:{},users:{},stats:{},lastId:1000};
+let db={menu:seedMenu,cats:cleanCats(seedMenu.map(m=>m.c)),settings:{},orders:[],slides:seedSlides,groups:seedGroups,catimg:{},users:{},stats:{},lastId:1000};
 const cfgFull=()=>({...SET_DEF,...db.settings});
 const cfgPub=()=>{const c=cfgFull();return{phone:c.phone,address:c.address,hours:c.hours,rating:c.rating,telegram:c.telegram,instagram:c.instagram,yandexKey:c.yandexKey||cl(E.YANDEX_MAPS_KEY,80).replace(/[^\w-]/g,''),lat:c.lat,lng:c.lng,delFirst:c.delFirst,delKm:c.delKm,delOn:c.delOn?1:0,minOn:c.minOn?1:0,minSum:c.minSum||0}};
 // ---- yetkazish: masofa, narx va manzilni aniqlash (Yandex geokoder; kalit boʻlmasa OpenStreetMap) ----
@@ -81,7 +82,7 @@ async function ygeoReq(key,extra){
   for(const lang of UZ_BAD?['ru_RU']:['uz_UZ','ru_RU']){
     try{
       const u=new URL(YGEO);u.search=new URLSearchParams({apikey:key,format:'json',lang,...extra});
-      const fm=((((await getJson(u,4500)).response||{}).GeoObjectCollection||{}).featureMember)||[];
+      const fm=((((await getJson(u,3500)).response||{}).GeoObjectCollection||{}).featureMember)||[];
       last=null;YST.e='';
       if(fm.length)return fm;
     }catch(e){last=e;if(lang==='uz_UZ'&&e.message==='HTTP 400')UZ_BAD=true}
@@ -125,11 +126,10 @@ async function revgeo(la,lo,c,nc){
   for(const key of keys){
     const tag='kalit …'+key.slice(-4);
     try{
-      for(const kind of['house','street','']){
-        const r=await yRev(key,la,lo,kind),sc=x=>x?(x.house?2:x.street?1:0):-1;
-        RLOG.push(tag+' ['+(kind||'umumiy')+']: '+(r?(r.house?'uy topildi':r.street?'koʻcha topildi':'faqat aholi punkti'):'natija yoʻq'));
-        if(sc(r)>sc(best))best=r;if(best&&(best.house||best.street))break;
-      }
+      const sc=x=>x?(x.house?2:x.street?1:0):-1;
+      const rs=await Promise.all(['house','street',''].map(kind=>yRev(key,la,lo,kind).then(r=>({kind,r})).catch(e=>({kind,r:null,e}))));
+      for(const {kind,r,e} of rs){RLOG.push(tag+' ['+(kind||'umumiy')+']: '+(e?'xato '+e.message:r?(r.house?'uy topildi':r.street?'koʻcha topildi':'faqat aholi punkti'):'natija yoʻq'));if(sc(r)>sc(best))best=r}
+      if(!best&&rs.every(x=>x.e))throw rs[0].e;
       if(best)break;
     }catch(e){RLOG.push(tag+': xato '+e.message);console.error('Yandex teskari geokoder xatosi:',e.message)}
   }
@@ -221,9 +221,10 @@ const esc=s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
 const IMG=new RegExp('^(/img/[\\w-]+\\.jpg|/photos/[\\w-]+\\.jpg|https://commons\\.wikimedia\\.org/wiki/Special:FilePath/[\\w%.\\-]+(\\?width=\\d+)?'+(SB?'|'+esc(SB.u)+'/storage/v1/object/public/'+esc(SB.b)+'/[\\w-]+\\.jpg':'')+')$');
 const okImg=s=>IMG.test(s||'')?s:'';
 const cleanMenu=(m,i)=>({id:Math.floor(+m.id)||Date.now()+i,n:cl(m.n,60),c:cl(m.c,30)||'Boshqa',p:Math.max(0,Math.floor(+m.p)||0),e:cl(m.e,8),u:cl(m.u,12),d:cl(m.d,120),a:m.a?1:0,img:okImg(m.img)});
-const cleanSlide=(s,i)=>({id:Math.floor(+s.id)||Date.now()+i,a:s.a?1:0,bg:['g','o','d'].includes(s.bg)?s.bg:'g',e:cl(s.e,12),k:cl(s.k,60),h:cl(s.h,120),p:cl(s.p,260),b:cl(s.b,30),l:/^(#[\w-]*|\/[\w\-\/]*)$/.test(s.l||'')?s.l:'#menu',i1:okImg(s.i1)});
+const cleanSlide=(s,i)=>({id:Math.floor(+s.id)||Date.now()+i,a:s.a?1:0,bg:['g','o','r','d'].includes(s.bg)?s.bg:'g',e:cl(s.e,12),k:cl(s.k,60),h:cl(s.h,120),p:cl(s.p,260),b:cl(s.b,30),l:/^(#[\w-]*|\/[\w\-\/]*)$/.test(s.l||'')?s.l:'#menu',i1:okImg(s.i1)});
+const cleanGroups=(a,cats)=>{const used=new Set();return(Array.isArray(a)?a:[]).slice(0,30).map(g=>({n:cl(g&&g.n,30),i:okImg(g&&g.i),cats:[...new Set((Array.isArray(g&&g.cats)?g.cats:[]).map(x=>cl(x,30)))].filter(c=>cats.includes(c)&&!used.has(c)&&used.add(c))})).filter(g=>g.n)};
 const cleanCatImg=(o,cats)=>{const r={};if(o&&typeof o==='object')for(const c of cats){const v=okImg(o[c]);if(v)r[c]=v}return r};
-function gc(){if(SB)return;try{const u=new Set(),add=x=>{const m=/^\/img\/([\w-]+\.jpg)$/.exec(x||'');if(m)u.add(m[1])};db.menu.forEach(m=>add(m.img));db.slides.forEach(s=>add(s.i1));Object.values(db.catimg).forEach(add);for(const f of fs.readdirSync(UP))if(!u.has(f)&&Date.now()-fs.statSync(path.join(UP,f)).mtimeMs>864e5)fs.unlinkSync(path.join(UP,f))}catch(e){console.error('gc:',e.message)}}
+function gc(){if(SB)return;try{const u=new Set(),add=x=>{const m=/^\/img\/([\w-]+\.jpg)$/.exec(x||'');if(m)u.add(m[1])};db.menu.forEach(m=>add(m.img));db.slides.forEach(s=>add(s.i1));Object.values(db.catimg).forEach(add);db.groups.forEach(g=>add(g.i));for(const f of fs.readdirSync(UP))if(!u.has(f)&&Date.now()-fs.statSync(path.join(UP,f)).mtimeMs>864e5)fs.unlinkSync(path.join(UP,f))}catch(e){console.error('gc:',e.message)}}
 // ---- Telegram: bot, tugmalar, Mini App ----
 const tgOn=()=>!!(E.BOT_TOKEN&&CH_A),BOT={un:'',mode:''};
 const TGS=crypto.createHash('sha256').update('wh|'+(E.BOT_TOKEN||'')+'|'+SEC).digest('hex').slice(0,48);
@@ -501,6 +502,7 @@ const server=http.createServer(async(req,res)=>{try{
     if(!SB&&(m=u.match(/^\/img\/([\w-]+\.jpg)$/)))return sendFile(res,path.join(UP,m[1]),'image/jpeg',{'cache-control':'public, max-age=2592000'});
     if(u==='/api/cfg')return send(res,200,cfgPub());
     if(u==='/api/menu')return send(res,200,db.menu.filter(x=>x.a));
+    if(u==='/api/groups')return send(res,200,db.groups);
     if(u==='/api/cats')return send(res,200,db.cats.map(c=>({n:c,i:db.catimg[c]||''})));
     if(u==='/api/slides')return send(res,200,db.slides.filter(x=>x.a));
     if(u==='/api/my'){
@@ -523,7 +525,7 @@ const server=http.createServer(async(req,res)=>{try{
       if(!authed(req))return send(res,401,{error:'Ruxsat yoʻq'});
       const l=Object.values(db.users).sort((a,b)=>b.t1-a.t1);return send(res,200,{total:l.length,users:l.slice(0,500)});
     }
-    if(u==='/api/admin/data')return authed(req)?send(res,200,{menu:db.menu,cats:db.cats,settings:cfgFull(),ymap:!!cfgPub().yandexKey,orders:db.orders.slice(-300),slides:db.slides,catimg:db.catimg,tg:{on:tgOn(),courier:!!CH_C,bot:BOT.un,mode:BOT.mode,app:WA},today:statsRange(dkey(Date.now()),dkey(Date.now())).tot,db:SB?'supabase':'local',keep:KEEP}):send(res,401,{error:'Ruxsat yoʻq'});
+    if(u==='/api/admin/data')return authed(req)?send(res,200,{menu:db.menu,cats:db.cats,settings:cfgFull(),ymap:!!cfgPub().yandexKey,orders:db.orders.slice(-300),slides:db.slides,catimg:db.catimg,groups:db.groups,tg:{on:tgOn(),courier:!!CH_C,bot:BOT.un,mode:BOT.mode,app:WA},today:statsRange(dkey(Date.now()),dkey(Date.now())).tot,db:SB?'supabase':'local',keep:KEEP}):send(res,401,{error:'Ruxsat yoʻq'});
     res.writeHead(404,{'content-type':'text/plain; charset=utf-8'});return res.end('404 — sahifa topilmadi');
   }
   if(M!=='POST')return res.writeHead(405).end();
@@ -583,8 +585,8 @@ const server=http.createServer(async(req,res)=>{try{
   if(u==='/api/admin/menu'&&Array.isArray(b.menu)){
     const items=b.menu.slice(0,300).map(cleanMenu).filter(m=>m.n&&m.p>0),cats=cleanCats(b.cats);
     for(const m of items)if(!cats.includes(m.c))cats.push(m.c); // kategoriyasi roʻyxatda yoʻq taom yoʻqolmasin
-    db.menu=items;db.cats=cats.slice(0,30);db.catimg=cleanCatImg(b.catimg,db.cats);
-    try{await saveK('menu');await saveK('cats');await saveK('catimg')}catch(e){return fail(res,e)}gc();return send(res,200,{ok:1,menu:db.menu,cats:db.cats,catimg:db.catimg});
+    db.menu=items;db.cats=cats.slice(0,30);db.catimg=cleanCatImg(b.catimg,db.cats);db.groups=cleanGroups(b.groups,db.cats);
+    try{await saveK('menu');await saveK('cats');await saveK('catimg');await saveK('groups')}catch(e){return fail(res,e)}gc();return send(res,200,{ok:1,menu:db.menu,cats:db.cats,catimg:db.catimg,groups:db.groups});
   }
   if(u==='/api/admin/bc/send')return bcStart(b,res);
   if(u==='/api/admin/bc/cancel'){if(bc.job&&bc.job.state==='running')bc.job.cancel=true;return send(res,200,{ok:1})}
@@ -621,6 +623,7 @@ async function boot(){
     try{rows=await sbAll()}catch(e){console.error('Supabase bilan ulanib boʻlmadi: '+e.message+'\nAgar "kv" jadvali yoʻq boʻlsa, supabase.sql ni Supabase SQL Editor da ishga tushiring.');process.exit(1)}
     const g=k=>{const r=rows.find(x=>x.key===k);return r&&Array.isArray(r.value)?r.value:null};
     for(const k of['menu','slides']){const v=g(k);if(v)db[k]=v;else await saveK(k).catch(e=>console.error('Boshlangʻich maʼlumotni yozib boʻlmadi:',e.message))}
+    {const v=g('groups');if(v)db.groups=v}
     {const r=rows.find(x=>x.key==='catimg');if(r&&r.value&&typeof r.value==='object'&&!Array.isArray(r.value))db.catimg=r.value}
     {const v=g('cats');if(v)db.cats=cleanCats(v);else{db.cats=cleanCats(db.menu.map(m=>m.c));await saveK('cats').catch(e=>console.error('Boshlangʻich maʼlumotni yozib boʻlmadi:',e.message))}}
     {const r=rows.find(x=>x.key==='settings');if(r&&r.value&&typeof r.value==='object'&&!Array.isArray(r.value))db.settings=cleanSettings(r.value)}
@@ -630,9 +633,13 @@ async function boot(){
     const mt=rows.find(x=>x.key==='meta');db.lastId=Math.max(1000,(mt&&mt.value&&+mt.value.lastId)||0);
     await sbFetch(`${SB.u}/storage/v1/bucket`,{method:'POST',headers:sbh({'content-type':'application/json'}),body:JSON.stringify({id:SB.b,name:SB.b,public:true})},1).catch(()=>{});
     setInterval(()=>sbFetch(`${SB.u}/rest/v1/kv?select=key&limit=1`,{headers:sbh()}).catch(e=>console.error('Supabase keep-alive:',e.message)),6*36e5);
-  }else{try{const d=JSON.parse(fs.readFileSync(DB,'utf8'));for(const k of['menu','slides'])if(Array.isArray(d[k]))db[k]=d[k];db.cats=cleanCats(Array.isArray(d.cats)?d.cats:db.menu.map(m=>m.c));if(d.catimg&&typeof d.catimg==='object')db.catimg=d.catimg;if(d.settings&&typeof d.settings==='object')db.settings=cleanSettings(d.settings);if(d.users&&typeof d.users==='object'&&!Array.isArray(d.users))db.users=d.users;if(d.stats&&typeof d.stats==='object'&&!Array.isArray(d.stats))db.stats=d.stats;if(Array.isArray(d.orders))db.orders=d.orders;db.lastId=Math.max(1000,+d.lastId||0)}catch{}gc()}
+  }else{try{const d=JSON.parse(fs.readFileSync(DB,'utf8'));for(const k of['menu','slides'])if(Array.isArray(d[k]))db[k]=d[k];db.cats=cleanCats(Array.isArray(d.cats)?d.cats:db.menu.map(m=>m.c));if(Array.isArray(d.groups))db.groups=d.groups;if(d.catimg&&typeof d.catimg==='object')db.catimg=d.catimg;if(d.settings&&typeof d.settings==='object')db.settings=cleanSettings(d.settings);if(d.users&&typeof d.users==='object'&&!Array.isArray(d.users))db.users=d.users;if(d.stats&&typeof d.stats==='object'&&!Array.isArray(d.stats))db.stats=d.stats;if(Array.isArray(d.orders))db.orders=d.orders;db.lastId=Math.max(1000,+d.lastId||0)}catch{}gc()}
   for(const m of db.menu)if(!db.cats.includes(m.c))db.cats.push(m.c);
-  db.catimg=cleanCatImg(db.catimg,db.cats);
+  // eski (Marakand) maʼlumot qolgan boʻlsa — Sevimli Market namunasi bilan almashtiramiz
+  if(db.menu.some(m=>m.n==='Osh (palov)')){db.menu=seedMenu;db.cats=cleanCats(seedMenu.map(m=>m.c));db.groups=seedGroups;db.catimg={};if(db.settings&&(db.settings.phone==='1414'||/Navoiy/.test(db.settings.address||'')))db.settings={};for(const k of['menu','cats','groups','catimg','settings'])await saveK(k).catch(()=>{})}
+  if(db.slides.some(x=>/Kafemizga|Marakand/i.test((x.h||'')+(x.p||'')))){db.slides=seedSlides;await saveK('slides').catch(()=>{})}
+  for(const m of db.menu)if(!db.cats.includes(m.c))db.cats.push(m.c);
+  db.catimg=cleanCatImg(db.catimg,db.cats);db.groups=cleanGroups(db.groups,db.cats);
   db.lastId=Math.max(db.lastId,...db.orders.map(o=>+o.id||0),1000);db.orders.forEach(o=>{if(o.st>=3&&!o.done)o.done=Date.now()});
   await purge();setInterval(()=>purge().catch(()=>{}),36e5).unref();
   // Render bepul rejasi 15 daqiqa soʻrovsiz qolsa uxlab qoladi: har 10 daqiqada oʻz manzilimizga soʻrov yuboramiz
