@@ -22,15 +22,17 @@ button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}a{colo
 .hr{display:flex;gap:10px;align-items:center;margin-left:auto}
 .cb{margin-left:auto;display:flex;gap:10px;align-items:center;height:46px;padding:0 18px;border-radius:14px;background:var(--g);color:#fff;font-weight:700;font-size:14px}.hr .cb{margin:0}.cb b{background:#fff;color:var(--g);border-radius:99px;padding:0 8px;min-width:24px;text-align:center}
 .pbtn{display:none;position:relative;width:46px;height:46px;border-radius:14px;background:var(--gl);color:var(--g);place-items:center}.tg .pbtn{display:grid}.pbtn svg{width:21px;height:21px}.pbtn.dot::after{content:'';position:absolute;top:6px;right:6px;width:10px;height:10px;border-radius:50%;background:var(--or);border:2px solid #fff}
-.hero{position:relative;margin-top:16px;border-radius:22px;overflow:hidden;height:clamp(180px,28vw,310px)}
-.sl{position:absolute;inset:0;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 clamp(20px,5vw,64px);color:#fff;opacity:0;visibility:hidden;transition:opacity .6s,visibility .6s}.sl.on{opacity:1;visibility:visible}
-.sl.g{background:linear-gradient(120deg,#4a7414,#7aa03a)}.sl.o{background:linear-gradient(120deg,#d9701a,#f4a340)}.sl.d{background:linear-gradient(120deg,#2f5410,#55801a)}
-.in{max-width:560px;position:relative;z-index:2}.k{display:inline-block;background:#ffffff2e;border-radius:99px;padding:4px 12px;font-size:12px;font-weight:700;margin-bottom:12px}
-.sl h1{font-size:clamp(24px,4.4vw,46px);line-height:1.1;margin-bottom:10px}.sl h1 em{font-style:normal;color:#fff3b0}.sl p{margin:0 0 18px;font-size:clamp(13px,1.6vw,17px);opacity:.92;max-width:460px}
-.cta{display:inline-flex;align-items:center;height:44px;padding:0 24px;border-radius:12px;background:#fff;color:var(--g);font-weight:800;text-decoration:none}
-.sv{flex:none;display:grid;place-items:center;font-size:clamp(64px,13vw,160px);line-height:1;filter:drop-shadow(0 10px 18px #0003)}.sv img{max-height:clamp(150px,24vw,270px);max-width:38vw;border-radius:18px;object-fit:cover}
-.arr{position:absolute;top:50%;transform:translateY(-50%);z-index:5;width:42px;height:42px;border-radius:50%;background:#fff;color:var(--g);font-size:22px;box-shadow:0 4px 14px #0003}.arr.l{left:12px}.arr.r{right:12px}
-.dots{position:absolute;bottom:12px;left:0;right:0;display:flex;justify-content:center;gap:6px;z-index:5}.dots button{width:8px;height:8px;border-radius:99px;background:#ffffff80;transition:.3s}.dots button.on{width:24px;background:#fff}.cnt{display:none}
+.hero{position:relative;margin-top:16px;border-radius:24px;overflow:hidden}#slides{display:grid}
+.sl{grid-area:1/1;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:clamp(200px,26vw,300px);padding:clamp(24px,4vw,44px) clamp(22px,5vw,64px) clamp(40px,5vw,54px);color:#fff;opacity:0;visibility:hidden;transition:opacity .6s,visibility .6s}.sl.on{opacity:1;visibility:visible}
+.sl::before{content:'';position:absolute;right:-70px;top:-90px;width:360px;height:360px;border-radius:50%;background:#ffffff1f}.sl::after{content:'';position:absolute;right:22%;bottom:-130px;width:260px;height:260px;border-radius:50%;background:#ffffff14}
+.sl.g{--ac:#3f6a12;background:linear-gradient(115deg,#3f6a12 0%,#6a9a2a 55%,#9bc24a 100%)}.sl.o{--ac:#c24a12;background:linear-gradient(115deg,#d4561a 0%,#f08a24 55%,#ffb547 100%)}.sl.r{--ac:#b3202e;background:linear-gradient(115deg,#b3202e 0%,#e23d4b 60%,#ff7a6b 100%)}.sl.d{--ac:#1d5fa8;background:linear-gradient(115deg,#1d5fa8 0%,#2f8fd8 60%,#6cc0f0 100%)}
+.in{flex:1;min-width:0;max-width:560px;position:relative;z-index:2}.k{display:inline-block;background:#fff;color:#1d2a14;border-radius:99px;padding:5px 14px;font-size:12px;font-weight:800;margin-bottom:14px;box-shadow:0 4px 12px #0002}
+.sl h1{font-size:clamp(24px,4.2vw,44px);line-height:1.1;margin-bottom:10px;letter-spacing:-.01em;text-shadow:0 2px 10px #0002}.sl h1 em{font-style:normal;color:#fff3b0}.sl p{margin:0 0 20px;font-size:clamp(13px,1.6vw,17px);line-height:1.5;opacity:.95;max-width:460px}
+.cta{white-space:nowrap;display:inline-flex;align-items:center;gap:8px;height:46px;padding:0 26px;border-radius:99px;background:#fff;color:var(--ac,var(--g));font-weight:800;text-decoration:none;box-shadow:0 8px 20px #0003;transition:transform .15s}.cta::after{content:'→';font-size:18px}.cta:hover{transform:translateY(-2px)}
+.sv{flex:none;position:relative;z-index:2;display:grid;place-items:center;font-size:clamp(46px,10vw,130px);line-height:1;filter:drop-shadow(0 12px 18px #0003)}.sv span{white-space:nowrap;letter-spacing:-.08em}.sv img{max-height:clamp(140px,22vw,250px);max-width:36vw;border-radius:20px;object-fit:cover;box-shadow:0 14px 30px #0003}
+.arr{position:absolute;top:50%;transform:translateY(-50%);z-index:5;width:42px;height:42px;border-radius:50%;background:#fff;color:#1d2a14;font-size:22px;box-shadow:0 4px 14px #0003}.arr.l{left:12px}.arr.r{right:12px}
+.dots{position:absolute;bottom:14px;left:0;right:0;display:flex;justify-content:center;gap:6px;z-index:5}.dots button{width:8px;height:8px;border-radius:99px;background:#ffffff80;transition:.3s}.dots button.on{width:26px;background:#fff}.cnt{display:none}
+.chs{flex:none;display:flex;gap:8px;overflow-x:auto;padding:12px 16px;background:#fff;border-bottom:1px solid var(--ln);scrollbar-width:none;width:100%;max-width:1000px;margin:0 auto}.chs::-webkit-scrollbar{display:none}.chs button{flex:none;padding:9px 16px;border-radius:99px;background:var(--bg);font-weight:600;font-size:14px;white-space:nowrap}.chs button.on{background:var(--g);color:#fff}.st3{font-size:20px;font-weight:800;margin:22px 0 12px}.st3:first-child{margin-top:4px}
 .sh{font-size:22px;margin:28px 0 14px}
 .cats{display:flex;gap:12px;overflow-x:auto;scrollbar-width:none;padding-bottom:6px}.cats::-webkit-scrollbar{display:none}.ct{flex:1 0 96px;max-width:140px;padding:0;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}
 .ci{width:100%;aspect-ratio:1;border-radius:20px;background:var(--gl);display:grid;place-items:center;font-size:46px;overflow:hidden;transition:transform .15s}.ci img{width:100%;height:100%;object-fit:cover}.ct:hover .ci{transform:translateY(-3px)}.ct b{font-size:13px;font-weight:700;line-height:1.25}
@@ -94,24 +96,24 @@ input.f,textarea{width:100%;padding:13px 14px;border:1px solid var(--ln);border-
 @media(min-width:700px){.gr{grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}}
 @media(min-width:960px){.ra{display:grid;place-items:center;position:absolute;top:34%;width:44px;height:44px;border-radius:50%;background:#fff;color:var(--tx);box-shadow:0 6px 18px #0003;z-index:3;opacity:0;transition:opacity .2s}.rwrap:hover .ra{opacity:1}.ra.l{left:6px}.ra.r{right:6px}.ra svg{width:20px;height:20px}.rwrap.nov .ra,.rwrap.at0 .ra.l,.rwrap.atE .ra.r{display:none!important}}
 @media(max-width:959px){.cats{margin:0 -20px;padding:0 20px 6px}.ct{flex:none;width:88px}.ci{font-size:36px;border-radius:18px}.arr{display:none}.ft .g{grid-template-columns:1fr}}
-@media(max-width:699px){.hw{gap:12px;min-height:60px}.lg img{height:38px}.sr{order:3;flex:1 1 100%;max-width:none}.cb #ct{display:none}.hero{border-radius:18px;margin-top:12px}.sh{font-size:20px}}
+@media(max-width:699px){.cta{padding:0 20px;height:44px}.hw{gap:12px;min-height:60px}.lg img{height:38px}.sr{order:3;flex:1 1 100%;max-width:none}.cb #ct{display:none}.hero{border-radius:18px;margin-top:12px}.sl{gap:10px}.sl::before{width:240px;height:240px;right:-60px;top:-70px}.sh{font-size:20px}}
 /* xarita tanlash oynasi (butun ekran, Yandex Go uslubida) */
-.mp{position:fixed;inset:0;z-index:110;background:#eef0f2;overflow:hidden;color:#16213e;font-family:Manrope,system-ui,sans-serif}.mp[hidden]{display:none}
+.mp{position:fixed;inset:0;z-index:110;background:#eef0f2;overflow:hidden;color:#1d2a14;font-family:Manrope,system-ui,sans-serif}.mp[hidden]{display:none}
 #mmap{position:absolute;inset:0}
 .pin{position:absolute;left:50%;top:50%;width:44px;height:44px;transform:translate(-50%,-100%);z-index:5;pointer-events:none;filter:drop-shadow(0 6px 6px #0004);transition:transform .18s}.pin.up{transform:translate(-50%,-132%)}
 .pinsh{position:absolute;left:50%;top:50%;width:14px;height:6px;margin:-3px 0 0 -7px;border-radius:50%;background:#0003;z-index:4;pointer-events:none;transition:.18s}.pin.up+.pinsh{transform:scale(.6);opacity:.5}
 .mtop{position:absolute;left:12px;right:12px;top:calc(12px + env(safe-area-inset-top,0px));display:flex;gap:10px;z-index:10}
-.mcl{width:44px;height:44px;flex:none;border-radius:50%;background:#fff;color:#16213e;display:grid;place-items:center;box-shadow:0 4px 16px #0003}
+.mcl{width:44px;height:44px;flex:none;border-radius:50%;background:#fff;color:#1d2a14;display:grid;place-items:center;box-shadow:0 4px 16px #0003}
 .msr{flex:1;min-width:0;height:44px;border-radius:12px;background:#fff;box-shadow:0 3px 12px #0003;display:flex;align-items:center;gap:8px;padding:0 12px;color:#8a93a6}
-.msr input{flex:1;min-width:0;border:0;outline:0;background:transparent;font:500 15px Manrope,system-ui,sans-serif;color:#16213e;padding:0;box-shadow:none}.msr input::placeholder{color:#9aa3b5}
+.msr input{flex:1;min-width:0;border:0;outline:0;background:transparent;font:500 15px Manrope,system-ui,sans-serif;color:#1d2a14;padding:0;box-shadow:none}.msr input::placeholder{color:#9aa3b5}
 .msr button{color:#8a93a6;font-size:24px;line-height:1;padding:0 2px}
 .msg{position:absolute;left:12px;right:12px;top:calc(64px + env(safe-area-inset-top,0px));z-index:11;background:#fff;border-radius:14px;box-shadow:0 10px 30px #0004;max-height:42vh;overflow:auto}.msg[hidden]{display:none}
-.msg button{display:block;width:100%;text-align:left;padding:11px 14px;font:500 14px/1.35 Manrope,system-ui,sans-serif;color:#16213e;border-bottom:1px solid #eef0f3}.msg button:last-child{border:0}.msg .ms-e{padding:14px 16px;color:#8a93a6;font-size:14px}
+.msg button{display:block;width:100%;text-align:left;padding:11px 14px;font:500 14px/1.35 Manrope,system-ui,sans-serif;color:#1d2a14;border-bottom:1px solid #eef0f3}.msg button:last-child{border:0}.msg .ms-e{padding:14px 16px;color:#8a93a6;font-size:14px}
 .msheet{position:absolute;left:0;right:0;bottom:0;z-index:12;background:#fff;border-radius:22px 22px 0 0;padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px));box-shadow:0 -8px 30px #0003;text-align:center}
 .mfab{position:absolute;right:12px;bottom:calc(100% + 12px);display:grid;gap:10px;justify-items:end}
-.mz{background:#fff;border-radius:22px;box-shadow:0 3px 12px #0003;display:grid;overflow:hidden;width:44px}.mz button{height:44px;font-size:22px;line-height:1;color:#16213e;font-weight:500}.mz button+button{border-top:1px solid #e6e9ee}
+.mz{background:#fff;border-radius:22px;box-shadow:0 3px 12px #0003;display:grid;overflow:hidden;width:44px}.mz button{height:44px;font-size:22px;line-height:1;color:#1d2a14;font-weight:500}.mz button+button{border-top:1px solid #e6e9ee}
 .mlc{width:44px;height:44px;border-radius:50%;background:#fff;box-shadow:0 3px 12px #0003;display:grid;place-items:center;color:var(--g)}
-.mpa{min-height:44px;font:600 16px/1.4 Manrope,system-ui,sans-serif;color:#16213e;display:flex;align-items:center;justify-content:center;padding:0 4px 12px;border-bottom:1px solid #eef0f3;margin-bottom:12px;word-break:break-word}.mpa.ld{color:#9aa3b5;font-weight:500}
+.mpa{min-height:44px;font:600 16px/1.4 Manrope,system-ui,sans-serif;color:#1d2a14;display:flex;align-items:center;justify-content:center;padding:0 4px 12px;border-bottom:1px solid #eef0f3;margin-bottom:12px;word-break:break-word}.mpa.ld{color:#9aa3b5;font-weight:500}
 .msheet .go{margin:0;height:46px;padding:0;border-radius:14px;font-size:15px;box-shadow:none}
 .mp .leaflet-bottom{bottom:var(--sh,230px)}
 .mpc{font-size:12px;color:#8a93a6;margin:-4px 0 10px}.mpc.w{color:#c0392b}
@@ -127,14 +129,14 @@ input.f,textarea{width:100%;padding:13px 14px;border:1px solid var(--ln);border-
 <section id="menu"><h2 class="sh">Kategoriyalar</h2><div class="cats" id="cats"></div><div id="sections"><div class="sk"></div><div class="sk"></div></div></section>
 </main>
 <footer class="ft" id="contact"><div class="w"><div class="g"><div><img src="/logo.png" alt="Sevimli Market"><p>Optom oziq-ovqat doʻkoni</p></div><div><h3>Aloqa</h3><div id="ctc"></div></div><div><h3>Ish vaqti</h3><p id="hrs"></p></div></div><div class="cp">© Sevimli Market</div></div></footer>
-<div class="mp" id="mp" hidden><div id="mmap"></div><svg class="pin" id="pin" viewBox="0 0 24 24"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z" fill="#d6a84f" stroke="#fff" stroke-width="1.2"/><circle cx="12" cy="10" r="2.8" fill="#fff"/></svg><div class="pinsh"></div>
+<div class="mp" id="mp" hidden><div id="mmap"></div><svg class="pin" id="pin" viewBox="0 0 24 24"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z" fill="#55801a" stroke="#fff" stroke-width="1.2"/><circle cx="12" cy="10" r="2.8" fill="#fff"/></svg><div class="pinsh"></div>
 <div class="mtop"><button class="mcl" id="mpx" aria-label="Yopish"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button><div class="msr"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="msq" type="search" placeholder="Manzilni qidirish" autocomplete="off" enterkeyhint="search"><button type="button" id="msx" hidden aria-label="Tozalash">×</button></div></div>
 <div class="msg" id="msg" hidden></div>
 <div class="msheet" id="msheet"><div class="mfab"><div class="mz"><button type="button" id="zin" aria-label="Kattalashtirish">+</button><button type="button" id="zout" aria-label="Kichraytirish">−</button></div><button type="button" class="mlc" id="locb" aria-label="Mening joylashuvim"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M21 3 3 10.5l7 2.5 2.5 7z"/></svg></button></div><div class="mpa ld" id="mpa">Manzil aniqlanmoqda…</div><div class="mpc" id="mpc" hidden></div><button class="go" id="mpok">Tasdiqlash</button></div></div>
 <div class="dock" id="dock" hidden><button class="dd" id="dd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h11v9H3zM14 9h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/></svg><span id="ddt"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></button><button class="dc" id="dc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2l2.2 11h10.6L20 8H6.2"/><circle cx="9" cy="19" r="1.4"/><circle cx="17" cy="19" r="1.4"/></svg><span id="dct"></span></button></div>
 <button class="fab" id="fab" hidden aria-label="Kategoriyalar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="6.5" height="6.5" rx="1.8"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.8"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.8"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.8"/></svg></button>
 <div class="sheet" id="sheet" hidden><div class="shb" id="shb"></div></div>
-<div class="pg" id="pgcat" hidden><div class="phd"><button data-back aria-label="Orqaga"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 6-6 6 6 6"/></svg></button><b id="cattl"></b><i></i></div><div class="pgb" id="catb"><div class="gr" id="catgr"></div></div></div>
+<div class="pg" id="pgcat" hidden><div class="phd"><button data-back aria-label="Orqaga"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 6-6 6 6 6"/></svg></button><b id="cattl"></b><i></i></div><div class="chs" id="catch" hidden></div><div class="pgb" id="catb"></div></div>
 <div class="pg" id="pgc" hidden><div class="phd"><button data-back aria-label="Orqaga"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 6-6 6 6 6"/></svg></button><b>Savatcha</b><button id="cclr" aria-label="Savatchani tozalash"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/></svg></button></div><div class="pgb"><div id="lines"></div><div class="mnw" id="cmin" hidden></div><div class="cem" id="cempty" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2l2.2 11h10.6L20 8H6.2"/><circle cx="9" cy="19" r="1.4"/><circle cx="17" cy="19" r="1.4"/></svg><br>Savatchangiz boʻsh.<br>Katalogdan mahsulot tanlang.</div></div><div class="pft"><div class="pt"><b id="ctot"></b><span>Umumiy</span></div><button class="pbn" id="cnext">Davom etish</button></div></div>
 <div class="pg" id="pgk" hidden><div class="phd"><button data-back aria-label="Orqaga"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 6-6 6 6 6"/></svg></button><b>Buyurtma berish</b><i></i></div><div class="pgb"><div class="ckw"><label>Ismingiz</label><input class="f" id="fn" autocomplete="name" placeholder="Ismingizni kiriting">
 <label>Telefon raqami</label><input class="f" id="fp" type="tel" inputmode="tel" placeholder="+998 90 123 45 67" autocomplete="tel">
@@ -161,9 +163,10 @@ const tdig=CFG.phone.replace(/[^\d+]/g,''),tel=tdig.replace(/^(\+998)(\d{2})(\d{
 $('ctc').innerHTML=`<p>${esc(CFG.address)}</p>`+(CFG.phone?`<a href="tel:${esc(tdig)}">${esc(tel)}</a>`:'')+(CFG.telegram?`<a href="${esc(CFG.telegram)}" target="_blank" rel="noopener">Telegram</a>`:'')+(CFG.instagram?`<a href="${esc(CFG.instagram)}" target="_blank" rel="noopener">Instagram</a>`:'');
 let sls=[],si=0,tm;
 const fmtH=t=>esc(t).replace(/\*([^*]+)\*/g,'<em>$1</em>');
+const DE={g:'🍎🥕🍅',o:'📦🛒🌾',r:'🚚',d:'🥛🧀'};
 function buildSlides(list){
-  if(!list.length)list=[{k:'Sevimli Market',h:'Xush *kelibsiz*',p:'Optom oziq-ovqat doʻkoni.',b:'Xarid qilish',l:'#menu',i1:'',e:'🛒',bg:'g'}];
-  $('slides').innerHTML=list.map(s=>`<div class="sl ${esc(s.bg||'g')}"><div class="in">${s.k?`<div class="k">${esc(s.k)}</div>`:''}<h1>${fmtH(s.h)}</h1><p>${esc(s.p)}</p>${s.b?`<a class="cta" href="${esc(s.l||'#menu')}">${esc(s.b)}</a>`:''}</div><div class="sv">${s.i1?`<img src="${esc(s.i1)}" alt="">`:`<span>${esc(s.e||'🛒')}</span>`}</div></div>`).join('');
+  if(!list.length)list=[{k:'Sevimli Market',h:'Xush *kelibsiz*',p:'Optom oziq-ovqat doʻkoni.',b:'Xarid qilish',l:'#menu',i1:'',bg:'g'}];
+  $('slides').innerHTML=list.map(s=>{const bg=['g','o','r','d'].includes(s.bg)?s.bg:'g';return `<div class="sl ${bg}"><div class="in">${s.k?`<div class="k">${esc(s.k)}</div>`:''}<h1>${fmtH(s.h)}</h1><p>${esc(s.p)}</p>${s.b?`<a class="cta" href="${esc(s.l||'#menu')}">${esc(s.b)}</a>`:''}</div><div class="sv">${s.i1?`<img src="${esc(s.i1)}" alt="">`:`<span>${esc(s.e||DE[bg])}</span>`}</div></div>`}).join('');
   sls=[...document.querySelectorAll('.sl')];const many=sls.length>1;
   $('dots').innerHTML=sls.map((_,i)=>`<button data-s="${i}" aria-label="Slayd ${i+1}"></button>`).join('');
   [$('dots'),$('pv'),$('nx')].forEach(e=>e.style.display=many?'':'none');
@@ -179,7 +182,7 @@ function imgErr(i){const p=i.parentNode;p.classList.add('ph');const e=document.c
 document.addEventListener('error',e=>{const i=e.target;if(i&&i.tagName==='IMG'&&i.dataset&&i.dataset.m!==undefined)imgErr(i)},true);
 const CEM=[['meva','🍎'],['sabzavot','🥕'],['sut','🥛'],['goʻsht','🥩'],['parranda','🍗'],['baliq','🐟'],['non','🍞'],['qandolat','🍪'],['shirin','🍫'],['yormа','🌾'],['yorma','🌾'],['bakaleya','🌾'],['un ','🌾'],['yogʻ','🫒'],['ziravor','🧂'],['ichimlik','🥤'],['suv','💧'],['choy','🍵'],['qahva','☕'],['tuxum','🥚'],['konserva','🥫'],['muzlat','🧊'],['uy-roʻzgʻor','🧴'],['tozalik','🧴']];
 const cem=c=>{c=String(c||'').toLowerCase();const x=CEM.find(([k])=>c.includes(k));return x?x[1]:'🛒'};
-let CATI={};
+let CATI={},GRP=[],GR=[];
 let ORD=[],menu=[],cat='Hammasi',cart={},qs='';
 const CSPV=[];document.addEventListener('securitypolicyviolation',e=>{CSPV.push(e.violatedDirective+' ← '+e.blockedURI)});
 let Q={idle:1},qT=0,qSeq=0,cfgT=0,pick=null,padr=''; // Q: yetkazish narxi holati
@@ -198,12 +201,18 @@ const pimg=m=>m.img?`<img src="${esc(m.img)}" alt="${esc(m.n)}" loading="lazy" d
 const unit=m=>m.u?`<small> / ${esc(m.u)}</small>`:'';
 const price=m=>`<div class="pr"><b>${m.p.toLocaleString('ru-RU')}</b> soʻm${unit(m)}</div>`;
 const pcard=m=>`<div class="pc"><div class="pi" data-open="${m.id}">${pimg(m)}</div><div class="pn" data-open="${m.id}">${esc(m.n)}</div>${price(m)}<div class="pb" data-id="${m.id}">${pctl(m)}</div></div>`;
+function buildGR(){
+  const have=new Set(menu.map(m=>m.c)),ord=[...ORD.filter(c=>have.has(c)),...[...have].filter(c=>!ORD.includes(c))],used=new Set();GR=[];
+  GRP.forEach(g=>{const cs=(g.cats||[]).filter(c=>have.has(c));cs.forEach(c=>used.add(c));if(cs.length)GR.push({n:g.n,i:g.i||'',cats:cs})});
+  ord.filter(c=>!used.has(c)).forEach(c=>GR.push({n:c,i:CATI[c]||'',cats:[c]}));
+}
+const gprods=g=>g.cats.flatMap(c=>menu.filter(m=>m.c===c));
 function drawMenu(){
-  const have=new Set(menu.map(m=>m.c));CATS=[...ORD.filter(c=>have.has(c)),...[...have].filter(c=>!ORD.includes(c))];
-  $('cats').innerHTML=CATS.map(c=>`<button class="ct" data-c="${esc(c)}"><span class="ci">${CATI[c]?`<img src="${esc(CATI[c])}" alt="" loading="lazy">`:cem(c)}</span><b>${esc(c)}</b></button>`).join('');
+  buildGR();CATS=GR.map(g=>g.n);
+  $('cats').innerHTML=GR.map((g,i)=>`<button class="ct" data-c="${i}"><span class="ci">${g.i?`<img src="${esc(g.i)}" alt="" loading="lazy">`:cem(g.n)}</span><b>${esc(g.n)}</b></button>`).join('');
   document.querySelector('#menu>.sh').hidden=!!qs;$('cats').hidden=!!qs;
   if(qs){const l=menu.filter(m=>m.n.toLowerCase().includes(qs));$('sections').innerHTML=`<h3 class="st2">“${esc(qs)}” boʻyicha natija · ${l.length} ta</h3>`+(l.length?`<div class="gr">${l.map(pcard).join('')}</div>`:'<p class="mut">Hech narsa topilmadi</p>');return}
-  $('sections').innerHTML=CATS.map(c=>`<section class="cs"><button class="cth" data-c="${esc(c)}"><span>${esc(c)}</span>${SR}</button><div class="rwrap"><button class="ra l" data-ra="-1" aria-label="Oldingi">${SL}</button><div class="rw">${menu.filter(m=>m.c===c).map(pcard).join('')}</div><button class="ra r" data-ra="1" aria-label="Keyingi">${SR}</button></div></section>`).join('');
+  $('sections').innerHTML=GR.map((g,i)=>`<section class="cs"><button class="cth" data-c="${i}"><span>${esc(g.n)}</span>${SR}</button><div class="rwrap"><button class="ra l" data-ra="-1" aria-label="Oldingi">${SL}</button><div class="rw">${gprods(g).slice(0,20).map(pcard).join('')}</div><button class="ra r" data-ra="1" aria-label="Keyingi">${SR}</button></div></section>`).join('');
 }
 function drawCart(){
   const n=cnt(),sb=tot(),dk=$('dock');
@@ -226,7 +235,7 @@ function refresh(id){const m=by(id);if(m)document.querySelectorAll(`.pb[data-id=
 /* kichik oynalar */
 function sheetOpen(h){$('shb').innerHTML=h;const s=$('sheet');s.hidden=false;void s.offsetWidth;s.classList.add('on')}
 function sheetClose(now){const s=$('sheet');if(s.hidden)return;s.classList.remove('on');if(now){s.hidden=true;return}setTimeout(()=>{if(!s.classList.contains('on'))s.hidden=true},200)}
-function openCats(){sheetOpen(`<div class="sht">Kategoriyalar</div><div class="shl">${CATS.map(c=>`<button class="shi" data-c="${esc(c)}"><span>${esc(c)}</span><em>${menu.filter(m=>m.c===c).length}</em></button>`).join('')}</div>`)}
+function openCats(){sheetOpen(`<div class="sht">Kategoriyalar</div><div class="shl">${GR.map((g,i)=>`<button class="shi" data-c="${i}"><span>${esc(g.n)}</span><em>${gprods(g).length}</em></button>`).join('')}</div>`)}
 function openDel(){const mn=CFG.minOn&&CFG.minSum>0?CFG.minSum:0;sheetOpen(`<div class="sht">Yetkazish shartlari</div><div class="shl">${CFG.delOn?`<div class="shr"><span>Birinchi 1 km</span><b>${fmt(CFG.delFirst)}</b></div><div class="shr"><span>Keyingi har bir km</span><b>${fmt(CFG.delKm)}</b></div><div class="shr"><span>Narx manzilingizga qarab avtomatik hisoblanadi</span></div>`:''}${mn?`<div class="shr"><span>Minimal buyurtma</span><b>${fmt(mn)}</b></div>`:''}</div>`)}
 function openDish(id){const m=by(id);if(!m)return;sheetOpen(`<div class="dsi">${m.img?`<img src="${esc(m.img)}" alt="${esc(m.n)}">`:`<i>${esc(pe(m))}</i>`}</div><h3 class="dsn">${esc(m.n)}</h3><p class="dsp"><b>${fmt(m.p)}</b>${m.u?' / '+esc(m.u):''}</p>${m.d?`<p class="dsd">${esc(m.d)}</p>`:''}<div class="pb dsb" data-id="${m.id}">${pctl(m)}</div>`)}
 /* sahifalar (orqaga tugmasi, brauzer va Telegram "Orqaga" bilan ishlaydi) */
@@ -250,11 +259,14 @@ function closeAll(){
 window.addEventListener('popstate',()=>{if(popping){popping=false;return}if(pages.length)closeTop(true)});
 window.addEventListener('scroll',()=>{if(!tick){tick=1;requestAnimationFrame(()=>{tick=0;syncFab()})}},{passive:true});
 const setHH=()=>document.documentElement.style.setProperty('--hh',(document.querySelector('.hd').offsetHeight||64)+'px');setHH();addEventListener('resize',()=>{setHH();document.documentElement.style.setProperty('--dockh',$('dock').hidden?'0px':$('dock').offsetHeight+'px')});
-function openCat(c){
-  $('cattl').textContent=c;$('catgr').innerHTML=menu.filter(m=>m.c===c).map(pcard).join('');
+function openCat(i){
+  const g=GR[+i];if(!g)return;$('cattl').textContent=g.n;const multi=g.cats.length>1;
+  $('catch').hidden=!multi;$('catch').innerHTML=multi?g.cats.map((c,k)=>`<button data-sc="${k}" class="${k?'':'on'}">${esc(c)}</button>`).join(''):'';
+  $('catb').innerHTML=multi?g.cats.map((c,k)=>`<h3 class="st3" id="sc${k}">${esc(c)}</h3><div class="gr">${menu.filter(m=>m.c===c).map(pcard).join('')}</div>`).join(''):`<div class="gr">${gprods(g).map(pcard).join('')}</div>`;
   if(pages.includes('pgcat'))$('catb').scrollTop=0;else openPage('pgcat');
   sheetClose();
 }
+$('catb').addEventListener('scroll',()=>{const bs=[...document.querySelectorAll('#catch button')];if(!bs.length)return;const t=$('catb').getBoundingClientRect().top;let a=0;bs.forEach((b,k)=>{const el=$('sc'+k);if(el&&el.getBoundingClientRect().top-t<70)a=k});bs.forEach((b,k)=>b.classList.toggle('on',k===a))},{passive:true});
 const escKey=()=>{if(!$('sheet').hidden)sheetClose();else if(pages.length)closeTop()};
 document.addEventListener('click',e=>{
   const op=e.target.closest('[data-open]');
@@ -265,6 +277,7 @@ document.addEventListener('click',e=>{
   if('back' in d){closeTop();return}
   if('home' in d){$('menu').scrollIntoView({behavior:'smooth'});return}
   if(d.ra){const w=t.parentElement.querySelector('.rw');w.scrollBy({left:+d.ra*w.clientWidth*.8,behavior:'smooth'});return}
+  if(d.sc!==undefined){const el=$('sc'+d.sc),b=$('catb');if(el)b.scrollBy({top:el.getBoundingClientRect().top-b.getBoundingClientRect().top-6,behavior:'smooth'});return}
   if(d.c!==undefined&&!d.i&&!d.d){openCat(d.c);return}
   const id=d.i||d.d;if(!id)return;
   if(d.i)cart[id]=Math.min(50,(cart[id]||0)+1);else if(--cart[id]<=0)delete cart[id];
@@ -363,42 +376,41 @@ async function addrOf(c){
 function fitSheet(){$('mp').style.setProperty('--sh',$('msheet').offsetHeight+'px')}
 function setA(t,ld){const a=$('mpa');a.textContent=t;a.classList.toggle('ld',!!ld);fitSheet()}
 let rtk=0;
-function rev(){
+function rev(now){
   clearTimeout(rt);const c=MX.center(),tk=++rtk;cur={lat:c.lat,lng:c.lng,addr:''};$('mpok').disabled=true;setA('Manzil aniqlanmoqda…',1);
   const done=a=>{
     const n=MX.center();if(tk!==rtk||n.lat!==c.lat||n.lng!==c.lng)return;
     if(!a&&cur&&cur.addr)return;
     cur={lat:c.lat,lng:c.lng,addr:a};setA(a||'Nuqta tanlandi',!a);$('mpok').disabled=false;
   };
-  rt=setTimeout(async()=>{let a='';try{a=await addrOf(c)}catch(e){}done(a)},450);
+  rt=setTimeout(async()=>{let a='';try{a=await addrOf(c)}catch(e){}done(a)},now?0:450);
   setTimeout(()=>done(''),9500); // server javob bermasa ham tugma qotib qolmaydi
 }
 let gw=0,lt=0;
 function stopLoc(){lt++;if(gw){try{navigator.geolocation.clearWatch(gw)}catch(e){}gw=0}}
 function locate(){
-  stopLoc();const my=lt;let got=0;
+  stopLoc();const my=lt;let got=0,bestA=1e9;
   setA('Joylashuvingiz aniqlanmoqda…',1);$('mpok').disabled=true;$('mpc').hidden=true;
   const note=(t,w)=>{const c=$('mpc');c.hidden=!t;c.classList.toggle('w',!!w);c.textContent=t||''};
-  const fail=msg=>{if(my!==lt||got)return;stopLoc();rev();note(msg,1)};
+  const fail=msg=>{if(my!==lt||got)return;stopLoc();rev(1);note(msg,1)};
+  // faqat oldingisidan aniqroq natija xaritani yangilaydi: avval tez (taxminiy), keyin aniq GPS
   const fix=(la,lo,acc)=>{
-    if(my!==lt)return;got=1;MX.set(la,lo,18);rev();
-    if(acc>0)note(acc>60?`GPS aniqligi ±${Math.round(acc)} m. Nuqtani xaritada tuzating`:`GPS aniqligi ±${Math.round(acc)} m`,acc>60);
+    if(my!==lt)return;acc=acc>0?acc:1e8;if(got&&acc>=bestA*.85)return;
+    const first=!got;got=1;bestA=acc;MX.set(la,lo,first?17:18);rev(1);
+    if(acc<1e8)note(acc>60?`GPS aniqligi ±${Math.round(acc)} m. Aniqlanmoqda…`:`GPS aniqligi ±${Math.round(acc)} m`,acc>60);
   };
+  const MSG='Joylashuv aniqlanmadi. GPS yoqilganini tekshiring yoki xaritani surib belgilang.';
   const web=()=>{
     if(!navigator.geolocation){fail('Brauzer joylashuvni aniqlay olmaydi. Xaritani surib belgilang.');return}
-    let best=1e9;
-    gw=navigator.geolocation.watchPosition(p=>{
-      if(my!==lt)return;const a=p.coords.accuracy||1e9;
-      if(a<best){best=a;fix(p.coords.latitude,p.coords.longitude,a)}
-      if(a<=25)stopLoc();
-    },er=>{if(my!==lt)return;if(best<1e9){stopLoc();return}fail(er.code===1?'Joylashuvga ruxsat berilmadi. Telefon sozlamasidan yoqing yoki xaritani surib belgilang.':'Joylashuv aniqlanmadi. GPS yoqilganini tekshiring yoki xaritani surib belgilang.')},{enableHighAccuracy:true,maximumAge:0,timeout:20000});
-    setTimeout(()=>{if(my===lt&&!got)fail('Joylashuv aniqlanmadi. GPS yoqilganini tekshiring yoki xaritani surib belgilang.')},22000);
+    navigator.geolocation.getCurrentPosition(p=>fix(p.coords.latitude,p.coords.longitude,p.coords.accuracy),()=>{},{enableHighAccuracy:false,maximumAge:300000,timeout:4000});
+    gw=navigator.geolocation.watchPosition(p=>{if(my!==lt)return;fix(p.coords.latitude,p.coords.longitude,p.coords.accuracy||1e8);if((p.coords.accuracy||1e9)<=20)stopLoc()},er=>{if(my!==lt)return;if(got)return;fail(er.code===1?'Joylashuvga ruxsat berilmadi. Telefon sozlamasidan yoqing yoki xaritani surib belgilang.':MSG)},{enableHighAccuracy:true,maximumAge:0,timeout:25000});
+    setTimeout(()=>{if(my===lt&&!got)fail(MSG)},12000);setTimeout(()=>{if(my===lt)stopLoc()},35000);
   };
-  // Telegram Mini App ichida telefonning oʻz GPS modulidan foydalanamiz (eng aniq)
+  // Telegram Mini App ichida telefonning oʻz GPS modulidan foydalanamiz
   const LM=TW&&TW.LocationManager;
   if(LM&&TW.isVersionAtLeast&&TW.isVersionAtLeast('8.0')){
     let used=0;const toWeb=()=>{if(used||my!==lt)return;used=1;web()};
-    setTimeout(()=>{if(!got)toWeb()},7000); // Telegram javob bermasa brauzer GPS ga oʻtamiz
+    setTimeout(()=>{if(!got)toWeb()},3000);
     try{LM.init(()=>{if(my!==lt||used)return;if(!LM.isLocationAvailable){toWeb();return}LM.getLocation(l=>{if(my!==lt||used)return;if(l&&l.latitude!=null){used=1;fix(l.latitude,l.longitude,l.horizontal_accuracy||0)}else toWeb()})})}catch(e){toWeb()}
   }else web();
 }
@@ -549,7 +561,7 @@ function initApp(){
 }
 if(inTG)loadScript('https://telegram.org/js/telegram-web-app.js').then(()=>{TW=window.Telegram&&Telegram.WebApp;if(TW){try{TW.ready();TW.expand();TW.setHeaderColor('#ffffff');TW.setBackgroundColor('#f4f6f0')}catch(e){}if(TW.initData)INIT=TW.initData}}).catch(()=>{}).then(initApp);
 fetch('/api/slides').then(r=>r.json()).then(buildSlides).catch(()=>buildSlides([]));
-Promise.all([fetch('/api/menu').then(r=>r.json()),fetch('/api/cats').then(r=>r.json()).catch(()=>[])]).then(([m,c])=>{menu=m;ORD=[];CATI={};(Array.isArray(c)?c:[]).forEach(x=>{ORD.push(x.n);if(x.i)CATI[x.n]=x.i});draw()}).catch(()=>{$('sections').innerHTML='<p class="mut">Katalog yuklanmadi. Sahifani yangilang.</p>'});
+Promise.all([fetch('/api/menu').then(r=>r.json()),fetch('/api/cats').then(r=>r.json()).catch(()=>[]),fetch('/api/groups').then(r=>r.json()).catch(()=>[])]).then(([m,c,gp])=>{menu=m;GRP=Array.isArray(gp)?gp:[];ORD=[];CATI={};(Array.isArray(c)?c:[]).forEach(x=>{ORD.push(x.n);if(x.i)CATI[x.n]=x.i});draw()}).catch(()=>{$('sections').innerHTML='<p class="mut">Katalog yuklanmadi. Sahifani yangilang.</p>'});
 </script>
 </body>
 </html>
