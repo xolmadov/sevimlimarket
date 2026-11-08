@@ -111,7 +111,7 @@ document.addEventListener('change',e=>{const t=e.target;if(!t.dataset||t.dataset
   D.menu.forEach(m=>{if(m.c===old)m.c=nv});D.groups.forEach(g=>g.cats=g.cats.map(x=>x===old?nv:x));D.cats[i]=nv;markDirty();view()});
 /* ---- rasm yuklash ---- */
 function pickFiles(multi,acc){return new Promise(res=>{const i=document.createElement('input');i.type='file';i.accept=acc||'image/*';i.multiple=!!multi;i.style.display='none';document.body.appendChild(i);i.onchange=()=>{res([...i.files]);i.remove()};i.click()})}
-async function toJpeg(file){
+async function toJpeg(file,type,q){
   let bm;
   try{bm=await createImageBitmap(file,{imageOrientation:'from-image'})}catch(e){
     try{bm=await createImageBitmap(file)}catch(e2){
@@ -120,10 +120,14 @@ async function toJpeg(file){
   }
   const w=bm.width||bm.naturalWidth,h=bm.height||bm.naturalHeight,k=Math.min(1,1600/Math.max(w,h)),c=document.createElement('canvas');
   c.width=Math.max(1,Math.round(w*k));c.height=Math.max(1,Math.round(h*k));const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(bm,0,0,c.width,c.height);
-  return c.toDataURL('image/jpeg',.86);
+  return c.toDataURL(type||'image/jpeg',q||.86);
+}
+async function toWebp(file){
+  // Rasmni brauzerning oʻzida WebP'ga oʻtkazadi; brauzer WebP bermasa JPG qaytadi (server ikkalasini ham qabul qiladi)
+  return toJpeg(file,'image/webp',.82);
 }
 async function upload(file){
-  let data;try{data=await toJpeg(file)}catch(e){throw new Error('Rasmni oʻqib boʻlmadi: '+file.name+'. JPG yoki PNG fayl tanlang.')}
+  let data;try{data=await toWebp(file)}catch(e){throw new Error('Rasmni oʻqib boʻlmadi: '+file.name+'. JPG yoki PNG fayl tanlang.')}
   const d=await api('/api/admin/upload',{data});return d.url;
 }
 /* ---- koʻrinishlar ---- */
