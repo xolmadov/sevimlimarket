@@ -183,7 +183,7 @@ async function sbFetch(url,opt,tries=3){let err;for(let i=0;i<tries;i++){try{con
 const sbPut=(key,value)=>sbFetch(`${SB.u}/rest/v1/kv?on_conflict=key`,{method:'POST',headers:sbh({'content-type':'application/json',prefer:'resolution=merge-duplicates,return=minimal'}),body:JSON.stringify({key,value,updated_at:new Date().toISOString()})});
 const sbDel=key=>sbFetch(`${SB.u}/rest/v1/kv?key=eq.${encodeURIComponent(key)}`,{method:'DELETE',headers:sbh()});
 async function sbAll(){const out=[];for(let off=0;;off+=1000){const r=await sbFetch(`${SB.u}/rest/v1/kv?select=key,value&order=key&limit=1000&offset=${off}`,{headers:sbh()});const rows=await r.json();out.push(...rows);if(rows.length<1000)break}return out}
-async function sbUpload(name,buf){await sbFetch(`${SB.u}/storage/v1/object/${SB.b}/${name}`,{method:'POST',headers:sbh({'content-type':'image/jpeg','x-upsert':'true'}),body:buf});return `${SB.u}/storage/v1/object/public/${SB.b}/${name}`}
+async function sbUpload(name,buf){const ct=/\.webp$/.test(name)?'image/webp':'image/jpeg';await sbFetch(`${SB.u}/storage/v1/object/${SB.b}/${name}`,{method:'POST',headers:sbh({'content-type':ct,'x-upsert':'true'}),body:buf});return `${SB.u}/storage/v1/object/public/${SB.b}/${name}`}
 // ---- saqlash ----
 // Tugagan buyurtmalar KEEP kundan keyin oʻchadi; ularning summasi kunlik statistikaga (db.stats) yigʻib qoʻyiladi
 let statsDirty=false;
@@ -218,14 +218,14 @@ const saveLocal=()=>{fs.writeFileSync(DB+'.tmp',JSON.stringify(db));fs.renameSyn
 const saveK=async k=>{if(SB)await sbPut(k,db[k]);else saveLocal()};
 const saveOrder=async o=>{if(SB)await sbPut('order:'+o.id,o);else saveLocal()};
 const esc=s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
-const IMG=new RegExp('^(/img/[\\w-]+\\.jpg|/photos/[\\w-]+\\.jpg|https://commons\\.wikimedia\\.org/wiki/Special:FilePath/[\\w%.\\-]+(\\?width=\\d+)?'+(SB?'|'+esc(SB.u)+'/storage/v1/object/public/'+esc(SB.b)+'/[\\w-]+\\.jpg':'')+')$');
+const IMG=new RegExp('^(/img/[\\w-]+\\.(?:jpg|webp)|/photos/[\\w-]+\\.jpg|https://commons\\.wikimedia\\.org/wiki/Special:FilePath/[\\w%.\\-]+(\\?width=\\d+)?'+(SB?'|'+esc(SB.u)+'/storage/v1/object/public/'+esc(SB.b)+'/[\\w-]+\\.(?:jpg|webp)':'')+')$');
 const okImg=s=>IMG.test(s||'')?s:'';
 const cleanMenu=(m,i)=>({id:Math.floor(+m.id)||Date.now()+i,n:cl(m.n,60),c:cl(m.c,30)||'Boshqa',p:Math.max(0,Math.floor(+m.p)||0),e:cl(m.e,8),u:cl(m.u,12),d:cl(m.d,120),a:m.a?1:0,img:okImg(m.img)});
 const cleanSlide=(s,i)=>({id:Math.floor(+s.id)||Date.now()+i,a:s.a?1:0,bg:['g','o','r','d'].includes(s.bg)?s.bg:'g',e:cl(s.e,12),k:cl(s.k,60),h:cl(s.h,120),p:cl(s.p,260),b:cl(s.b,30),l:/^(#[\w-]*|\/[\w\-\/]*)$/.test(s.l||'')?s.l:'#menu',i1:okImg(s.i1)});
 const cleanGroups=(a,cats)=>{const used=new Set();return(Array.isArray(a)?a:[]).slice(0,30).map(g=>({n:cl(g&&g.n,30),i:okImg(g&&g.i),cats:[...new Set((Array.isArray(g&&g.cats)?g.cats:[]).map(x=>cl(x,30)))].filter(c=>cats.includes(c)&&!used.has(c)&&used.add(c))})).filter(g=>g.n)};
 const cleanPrinters=a=>(Array.isArray(a)?a:[]).slice(0,10).map((p,i)=>({id:cl(p&&p.id,24).replace(/[^\w-]/g,'')||'p'+Date.now().toString(36)+i,n:cl(p&&p.n,40)||'Printer',t:p&&p.t==='browser'?'browser':'lan',ip:cl(p&&p.ip,40).replace(/[^\d.]/g,''),port:Math.min(65535,Math.max(1,Math.floor(+(p&&p.port))||9100)),w:p&&+p.w===80?80:58,c:Math.min(5,Math.max(1,Math.floor(+(p&&p.c))||1)),on:p&&p.on?1:0}));
 const cleanCatImg=(o,cats)=>{const r={};if(o&&typeof o==='object')for(const c of cats){const v=okImg(o[c]);if(v)r[c]=v}return r};
-function gc(){if(SB)return;try{const u=new Set(),add=x=>{const m=/^\/img\/([\w-]+\.jpg)$/.exec(x||'');if(m)u.add(m[1])};db.menu.forEach(m=>add(m.img));db.slides.forEach(s=>add(s.i1));Object.values(db.catimg).forEach(add);db.groups.forEach(g=>add(g.i));for(const f of fs.readdirSync(UP))if(!u.has(f)&&Date.now()-fs.statSync(path.join(UP,f)).mtimeMs>864e5)fs.unlinkSync(path.join(UP,f))}catch(e){console.error('gc:',e.message)}}
+function gc(){if(SB)return;try{const u=new Set(),add=x=>{const m=/^\/img\/([\w-]+\.(?:jpg|webp))$/.exec(x||'');if(m)u.add(m[1])};db.menu.forEach(m=>add(m.img));db.slides.forEach(s=>add(s.i1));Object.values(db.catimg).forEach(add);db.groups.forEach(g=>add(g.i));for(const f of fs.readdirSync(UP))if(!u.has(f)&&Date.now()-fs.statSync(path.join(UP,f)).mtimeMs>864e5)fs.unlinkSync(path.join(UP,f))}catch(e){console.error('gc:',e.message)}}
 // ---- Printerlar: chek (ESC/POS) tarmoq (LAN) printerga yuboriladi ----
 const net=require('net'),PRLOG=[];
 const CY={А:'A',Б:'B',В:'V',Г:'G',Д:'D',Е:'E',Ё:'Yo',Ж:'J',З:'Z',И:'I',Й:'Y',К:'K',Л:'L',М:'M',Н:'N',О:'O',П:'P',Р:'R',С:'S',Т:'T',У:'U',Ф:'F',Х:'X',Ц:'Ts',Ч:'Ch',Ш:'Sh',Щ:'Sh',Ъ:'',Ы:'I',Ь:'',Э:'E',Ю:'Yu',Я:'Ya',Ў:"O'",Қ:'Q',Ғ:"G'",Ҳ:'H'};
@@ -537,7 +537,7 @@ const server=http.createServer(async(req,res)=>{try{
     if(u===AP)return page(res,'admin.html',{'x-robots-tag':'noindex, nofollow','cache-control':'no-store','referrer-policy':'same-origin'});
     if(u==='/logo.png'||u==='/favicon.png')return sendFile(res,path.join(PUB,u),'image/png',{'cache-control':'public, max-age=86400'});
     let m;
-    if(!SB&&(m=u.match(/^\/img\/([\w-]+\.jpg)$/)))return sendFile(res,path.join(UP,m[1]),'image/jpeg',{'cache-control':'public, max-age=2592000'});
+    if(!SB&&(m=u.match(/^\/img\/([\w-]+\.(?:jpg|webp))$/)))return sendFile(res,path.join(UP,m[1]),/\.webp$/.test(m[1])?'image/webp':'image/jpeg',{'cache-control':'public, max-age=2592000'});
     if(u==='/api/cfg')return send(res,200,cfgPub());
     if(u==='/api/menu')return send(res,200,db.menu.filter(x=>x.a));
     if(u==='/api/groups')return send(res,200,db.groups);
@@ -631,10 +631,11 @@ const server=http.createServer(async(req,res)=>{try{
   if(u==='/api/admin/settings'&&b.settings&&typeof b.settings==='object'){db.settings=cleanSettings(b.settings);try{await saveK('settings')}catch(e){return fail(res,e)}return send(res,200,{ok:1,settings:cfgFull(),ymap:!!cfgPub().yandexKey})}
   if(u==='/api/admin/slides'&&Array.isArray(b.slides)){db.slides=b.slides.slice(0,20).map(cleanSlide).filter(s=>s.h);try{await saveK('slides')}catch(e){return fail(res,e)}gc();return send(res,200,{ok:1,slides:db.slides})}
   if(u==='/api/admin/upload'){
-    const m=/^data:image\/jpeg;base64,([A-Za-z0-9+/=]+)$/.exec(b.data||'');if(!m)return send(res,400,{error:'Rasm formati notoʻgʻri (JPG boʻlishi kerak)'});
-    const buf=Buffer.from(m[1],'base64');if(buf.length>4e6)return send(res,413,{error:'Rasm juda katta'});
-    if(!(buf[0]===0xff&&buf[1]===0xd8&&buf[2]===0xff))return send(res,400,{error:'Bu rasm fayli emas'});
-    const f=crypto.randomBytes(8).toString('hex')+'.jpg';
+    const m=/^data:image\/(webp|jpeg);base64,([A-Za-z0-9+/=]+)$/.exec(b.data||'');if(!m)return send(res,400,{error:'Rasm formati notoʻgʻri (WebP yoki JPG boʻlishi kerak)'});
+    const buf=Buffer.from(m[2],'base64');if(buf.length>4e6)return send(res,413,{error:'Rasm juda katta'});
+    const isWebp=buf.length>12&&buf.toString('latin1',0,4)==='RIFF'&&buf.toString('latin1',8,12)==='WEBP',isJpg=buf[0]===0xff&&buf[1]===0xd8&&buf[2]===0xff;
+    if(m[1]==='webp'?!isWebp:!isJpg)return send(res,400,{error:'Bu rasm fayli emas'});
+    const f=crypto.randomBytes(8).toString('hex')+(isWebp?'.webp':'.jpg');
     try{if(SB)return send(res,200,{url:await sbUpload(f,buf)});fs.writeFileSync(path.join(UP,f),buf);return send(res,200,{url:'/img/'+f})}catch(e){return fail(res,e)}
   }
   if(u==='/api/admin/printers'&&Array.isArray(b.printers)){
