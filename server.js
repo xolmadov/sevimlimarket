@@ -220,7 +220,7 @@ const saveOrder=async o=>{if(SB)await sbPut('order:'+o.id,o);else saveLocal()};
 const esc=s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
 const IMG=new RegExp('^(/img/[\\w-]+\\.(?:jpg|webp)|/photos/[\\w-]+\\.jpg|https://commons\\.wikimedia\\.org/wiki/Special:FilePath/[\\w%.\\-]+(\\?width=\\d+)?'+(SB?'|'+esc(SB.u)+'/storage/v1/object/public/'+esc(SB.b)+'/[\\w-]+\\.(?:jpg|webp)':'')+')$');
 const okImg=s=>IMG.test(s||'')?s:'';
-const cleanMenu=(m,i)=>({id:Math.floor(+m.id)||Date.now()+i,n:cl(m.n,60),c:cl(m.c,30)||'Boshqa',p:Math.max(0,Math.floor(+m.p)||0),e:cl(m.e,8),u:cl(m.u,12),d:cl(m.d,120),a:m.a?1:0,img:okImg(m.img)});
+const cleanMenu=(m,i)=>({id:Math.floor(+m.id)||Date.now()+i,n:cl(m.n,60),c:cl(m.c,30)||'Boshqa',p:Math.max(0,Math.floor(+m.p)||0),e:cl(m.e,8),u:cl(m.u,16),d:cl(m.d,120),a:m.a?1:0,img:okImg(m.img)});
 const cleanSlide=(s,i)=>({id:Math.floor(+s.id)||Date.now()+i,a:s.a?1:0,bg:['g','o','r','d'].includes(s.bg)?s.bg:'g',e:cl(s.e,12),k:cl(s.k,60),h:cl(s.h,120),p:cl(s.p,260),b:cl(s.b,30),l:/^(#[\w-]*|\/[\w\-\/]*)$/.test(s.l||'')?s.l:'#menu',i1:okImg(s.i1)});
 const cleanGroups=(a,cats)=>{const used=new Set();return(Array.isArray(a)?a:[]).slice(0,30).map(g=>({n:cl(g&&g.n,30),i:okImg(g&&g.i),cats:[...new Set((Array.isArray(g&&g.cats)?g.cats:[]).map(x=>cl(x,30)))].filter(c=>cats.includes(c)&&!used.has(c)&&used.add(c))})).filter(g=>g.n)};
 const cleanPrinters=a=>(Array.isArray(a)?a:[]).slice(0,10).map((p,i)=>({id:cl(p&&p.id,24).replace(/[^\w-]/g,'')||'p'+Date.now().toString(36)+i,n:cl(p&&p.n,40)||'Printer',t:p&&p.t==='browser'?'browser':'lan',ip:cl(p&&p.ip,40).replace(/[^\d.]/g,''),port:Math.min(65535,Math.max(1,Math.floor(+(p&&p.port))||9100)),w:p&&+p.w===80?80:58,c:Math.min(5,Math.max(1,Math.floor(+(p&&p.c))||1)),on:p&&p.on?1:0}));
@@ -621,7 +621,8 @@ const server=http.createServer(async(req,res)=>{try{
   if(u==='/api/admin/status'){const o=db.orders.find(x=>x.id===b.id);if(!o)return send(res,404,{error:'Buyurtma topilmadi'});if(!Number.isInteger(b.st)||b.st<0||b.st>4)return send(res,400,{error:'Holat notoʻgʻri'});if(b.st!==o.st){const k=panelSet(o,b.st);await after(o,k)}return send(res,200,{ok:1})}
   if(u==='/api/admin/resend'){const o=db.orders.find(x=>x.id===b.id);if(!o)return send(res,404,{error:'Buyurtma topilmadi'});o.tg=await tg(o);try{await saveOrder(o)}catch(e){return fail(res,e)}return send(res,200,{ok:o.tg})}
   if(u==='/api/admin/menu'&&Array.isArray(b.menu)){
-    const items=b.menu.slice(0,300).map(cleanMenu).filter(m=>m.n&&m.p>0),cats=cleanCats(b.cats);
+    const raw=b.menu.slice(0,300).filter(m=>m&&typeof m==='object');if(raw.some(m=>!cl(m.n,60)))return send(res,400,{error:'Mahsulot nomini yozing'});const cb=raw.find(m=>!cl(m.c,30));if(cb)return send(res,400,{error:'«'+cl(cb.n,60)+'» uchun kategoriyani tanlang'});const pb=raw.find(m=>!(Math.floor(+m.p)>0));if(pb)return send(res,400,{error:'«'+cl(pb.n,60)+'» narxini kiriting'});
+    const items=raw.map(cleanMenu),cats=cleanCats(b.cats);
     for(const m of items)if(!cats.includes(m.c))cats.push(m.c); // kategoriyasi roʻyxatda yoʻq taom yoʻqolmasin
     db.menu=items;db.cats=cats.slice(0,30);db.catimg=cleanCatImg(b.catimg,db.cats);db.groups=cleanGroups(b.groups,db.cats);
     try{await saveK('menu');await saveK('cats');await saveK('catimg');await saveK('groups')}catch(e){return fail(res,e)}gc();return send(res,200,{ok:1,menu:db.menu,cats:db.cats,catimg:db.catimg,groups:db.groups});
