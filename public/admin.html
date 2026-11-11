@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>Sevimli Market · Boshqaruv</title>
-<link rel="icon" href="/favicon.png">
+<link rel="icon" href="/favicon.png"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{--n:#001622;--n1:#04202f;--n2:#073147;--y:#55801a;--cr:#f4ecdc;--mut:#8fa6b0;--ln:#ffffff1c;--r:#ff6b6b;--g:#3ecf8e}
 *{box-sizing:border-box}body{margin:0;background:var(--n);color:var(--cr);font:14px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
@@ -70,6 +70,67 @@ header{flex-wrap:nowrap}header b{white-space:nowrap;overflow:hidden;text-overflo
 .acc .th{width:40px;height:40px;border-radius:10px;background:var(--n);display:grid;place-items:center;overflow:hidden;flex:none;font-size:22px}.acc .th img{width:100%;height:100%;object-fit:cover}.acc.off .at,.acc.off .th{opacity:.45}
 .acc .box,.acc .gbox{border:0;padding:0;margin:0;background:none}
 .oact{display:flex;gap:8px;margin-top:12px}.oact .btn{flex:1;min-height:44px}
+/* ===== Professional panel dizayni (v2) ===== */
+:root{--n:#f4f6f0;--n1:#fff;--n2:#eaf0e0;--y:#55801a;--yd:#456a14;--gl:#edf4df;--cr:#1d2a14;--mut:#6a7860;--ln:#e3e8da;--r:#d93a3a;--sh:0 1px 2px #1d2a1410,0 6px 18px #1d2a140a;--hh:60px}
+body{font-family:Manrope,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:14px;-webkit-font-smoothing:antialiased;letter-spacing:-.005em}
+header{height:var(--hh);padding:0 24px;border-bottom:1px solid var(--ln);box-shadow:0 1px 0 #fff}
+header b{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:800;color:var(--cr)}header b img{width:30px;height:30px;border-radius:9px}header b small{font-weight:600;color:var(--mut);font-size:12.5px;padding-left:10px;border-left:1px solid var(--ln)}
+.btn{height:40px;padding:0 16px;border-radius:10px;background:#fff;border:1px solid var(--ln);box-shadow:0 1px 1px #1d2a1408;font-weight:700;transition:background .15s,border-color .15s,box-shadow .15s}
+.btn:hover{border-color:#c5d1b3;background:#fbfcf8}.btn:active{transform:translateY(1px)}
+.btn.p{background:var(--y);border-color:var(--y);color:#fff;box-shadow:0 1px 2px #55801a55}.btn.p:hover{background:var(--yd);border-color:var(--yd)}
+.btn.d{color:var(--r)}.btn.d:hover{background:#fdf0f0;border-color:#f3c9c9}.btn:disabled{opacity:.45;pointer-events:none}
+.btn:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--y);outline-offset:2px}
+input,select,textarea{height:42px;padding:0 12px;border-radius:10px;border:1px solid #d6ddc9;background:#fff;transition:border-color .15s,box-shadow .15s}
+textarea{height:auto;padding:10px 12px}input:focus,select:focus,textarea:focus{border-color:var(--y);box-shadow:0 0 0 3px #55801a22}
+input[type=checkbox]{height:18px;padding:0}input::placeholder{color:#a3ae98}
+.err{border-color:var(--r)!important;box-shadow:0 0 0 3px #d93a3a1f!important}
+label.l{font-size:12.5px;font-weight:700;color:var(--mut);margin:0 0 5px}label.l i{color:var(--r);font-style:normal}
+.box{border-radius:16px;border:1px solid var(--ln);box-shadow:var(--sh);padding:16px}
+.lg{border-radius:20px;box-shadow:var(--sh);padding:30px}
+/* chap menyu (kompyuter) / yuqori tabbar (telefon) */
+.tabs{gap:6px;margin:0 0 18px;position:sticky;top:var(--hh);z-index:4;background:var(--n);padding:10px 0}
+.tabs .btn{height:38px;border-radius:99px;box-shadow:none;color:var(--mut)}
+.tabs .btn.on{background:var(--y);color:#fff;border-color:var(--y)}
+@media(min-width:1000px){
+.tabs{position:fixed;left:0;top:var(--hh);bottom:0;width:232px;flex-direction:column;align-items:stretch;overflow-y:auto;margin:0;padding:18px 14px;background:#fff;border-right:1px solid var(--ln)}
+.tabs .btn{width:100%;height:42px;text-align:left;border:0;border-radius:10px;background:none;padding:0 14px;font-size:14px}
+.tabs .btn:hover{background:var(--n);color:var(--cr)}
+.tabs .btn.on{background:var(--gl);color:var(--yd);box-shadow:inset 3px 0 0 var(--y)}
+.w{max-width:none;margin:0 0 0 232px;padding:28px 36px 40px}.w>*:not(.tabs){max-width:940px}
+}
+.hl{background:#fff;border:1px solid var(--ln);border-radius:12px;padding:12px 14px;color:var(--mut)}
+/* mahsulot qatorlari */
+.acc{border-radius:14px;border:1px solid var(--ln);box-shadow:var(--sh);margin-bottom:8px;transition:border-color .15s;scroll-margin-top:130px}
+.acc:hover{border-color:#cfd9c0}.acc[open]{border-color:var(--y);box-shadow:0 0 0 3px #55801a14,var(--sh)}
+.acc>summary{min-height:64px;padding:10px 16px;border-radius:14px}.acc>summary:hover{background:#fafcf6}.acc[open]>summary{border-radius:14px 14px 0 0;background:#f7faf1}
+.acc .th{width:46px;height:46px;border-radius:12px;background:var(--n);font-size:24px}
+.acc .at{font-weight:800;font-size:14.5px}.acc .as{font-weight:700;color:var(--cr);font-size:13.5px}
+.acc>.ab{padding:18px 16px 16px}.acc .acc{box-shadow:none}
+.cbd{font-size:12px;font-weight:700;padding:3px 10px;border-radius:99px;background:var(--gl);color:var(--yd);white-space:nowrap;max-width:150px;overflow:hidden;text-overflow:ellipsis}.cbd.bad{background:#fde8e8;color:#a32020}
+.dg{display:grid;grid-template-columns:120px minmax(0,1fr);gap:18px;align-items:start}.dg .f{gap:12px}
+.dft{margin-top:16px;padding-top:14px;border-top:1px solid var(--ln)}
+.empty{text-align:center;color:var(--mut);padding:36px 16px}
+.mtool{display:flex;gap:10px;align-items:center;margin-bottom:10px}.mtool input{flex:1}
+.chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding-bottom:4px}.chips::-webkit-scrollbar{display:none}
+.chips .btn{height:34px;border-radius:99px;flex:none;font-size:13px;box-shadow:none}
+.bar{bottom:0;margin:12px -4px 0;padding:12px 4px;background:#f4f6f0f2;border-top:1px solid var(--ln);align-items:center}
+.dirty.on{color:#8a5200}
+.st .box,.kp .box{padding:16px}.kp b,.st b{font-weight:800}
+.t{border-radius:12px;font-weight:700}
+/* tezkor qoʻshish oynasi */
+.mo{position:fixed;inset:0;z-index:60;background:#14200c88;backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;padding:16px;animation:mi .15s}
+.md{background:#fff;border-radius:22px;width:min(100%,540px);max-height:94vh;display:flex;flex-direction:column;box-shadow:0 30px 70px #0005;animation:mu .18s}
+.mh{display:flex;justify-content:space-between;align-items:center;padding:18px 20px 4px}.mh h3{margin:0;font-size:19px;font-weight:800}
+.ix{width:38px;padding:0;font-size:22px;line-height:1;border:0;box-shadow:none;background:var(--n)}
+.mb{padding:14px 20px 18px;display:grid;gap:14px;overflow-y:auto}
+.qt{display:grid;grid-template-columns:92px minmax(0,1fr);gap:14px;align-items:end}.qt .ph{width:92px;height:92px}
+.uc{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.uc button{height:30px;padding:0 12px;border-radius:99px;border:1px solid var(--ln);background:#fff;font-size:13px;font-weight:700;color:var(--mut)}
+.uc button:hover{border-color:var(--y)}.uc button.on{background:var(--gl);border-color:var(--y);color:var(--yd)}
+.mf{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;padding:14px 20px;border-top:1px solid var(--ln);background:#fafcf6;border-radius:0 0 22px 22px}
+@keyframes mi{from{opacity:0}}@keyframes mu{from{transform:translateY(14px);opacity:0}}
+@media(max-width:760px){.dg{grid-template-columns:1fr}.dg .ph.big{width:96px;height:96px}.cbd{display:none}header{padding:0 14px}header b small{display:none}.w{padding:10px 14px 24px}.tabs{margin:0 -14px 10px;padding:10px 14px}}
+@media(max-width:600px){.mo{align-items:flex-end;padding:0}.md{width:100%;border-radius:22px 22px 0 0;max-height:96vh}.mf{border-radius:0}.mf .btn{flex:1}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
@@ -153,10 +214,10 @@ const grpV=()=>{const used=new Set(D.groups.flatMap(g=>g.cats)),free=D.cats.filt
 const body=`<div class="hint" style="margin:0 0 12px">Saytning bosh sahifasida shular rasmli kartochka boʻlib chiqadi. Ichiga oddiy kategoriyalarni qoʻshing: mijoz asosiy kategoriyani ochganda ular tugmalar boʻlib koʻrinadi.</div>${D.groups.map((g,i)=>acc('g'+i,`<span class="th">${g.i?`<img src="${esc(g.i)}" alt="">`:'🗂'}</span><span class="at">${esc(g.n)}</span>`,g.cats.length+' ta',`<div class="gbox"><div class="cr k"><div class="ph" data-a="gimg" data-i="${i}">${g.i?`<img src="${esc(g.i)}" alt=""><button class="x" data-a="gimgx" data-i="${i}" title="Olib tashlash">×</button>`:'Rasm'}</div><input data-g="${i}" value="${esc(g.n)}" maxlength="30"></div><div class="gch">${g.cats.map((c,k)=>`<span class="chip">${esc(c)}<button data-a="gcx" data-i="${i}" data-k="${k}" title="Chiqarish">×</button></span>`).join('')||'<span class="hint">Hali oddiy kategoriya qoʻshilmagan</span>'}${free.length?`<select data-gadd="${i}"><option value="">+ Oddiy kategoriya qoʻshish</option>${free.map(c=>`<option>${esc(c)}</option>`).join('')}</select>`:''}</div><div class="oact"><button class="btn" data-a="grpup" data-i="${i}" ${i?'':'disabled'}>↑ Yuqoriga</button><button class="btn" data-a="grpdn" data-i="${i}" ${i<D.groups.length-1?'':'disabled'}>↓ Pastga</button><button class="btn d" data-a="grpdel" data-i="${i}">Oʻchirish</button></div></div>`,false)).join('')||'<div class="hint">Hozircha asosiy kategoriya yoʻq. Pastdan qoʻshing.</div>'}<div class="cr" style="margin-top:12px"><input id="ngrp" placeholder="Yangi asosiy kategoriya nomi" maxlength="30"><button class="btn p" data-a="grpadd">+ Qoʻshish</button></div>${free.length?`<div class="hint" style="margin-top:8px">Hech qaysi asosiy kategoriyaga kirmagan: ${free.map(esc).join(', ')}. Ular saytda alohida kartochka boʻlib chiqadi.</div>`:''}`;
 return acc('grps','<span class="th">🗂</span><span class="at">Asosiy kategoriyalar</span>',D.groups.length+' ta',body,false)};
 const catV=()=>grpV()+acc('cats','<span class="th">🏷</span><span class="at">Oddiy kategoriyalar</span>',D.cats.length+' ta',`<div class="hint" style="margin:0 0 12px">Mahsulotlar shu kategoriyalarga bogʻlanadi (masalan: Mevalar, Sabzavotlar). Ularni yuqoridagi asosiy kategoriyalarga joylashtiring.</div>${D.cats.map((c,i)=>`<div class="cr k"><input data-cat="${i}" value="${esc(c)}" maxlength="30"><span class="bd">${D.menu.filter(m=>m.c===c).length} ta</span><button class="btn" data-a="cup" data-i="${i}" ${i?'':'disabled'}>↑</button><button class="btn" data-a="cdn" data-i="${i}" ${i<D.cats.length-1?'':'disabled'}>↓</button><button class="btn d" data-a="cdel" data-i="${i}">Oʻchirish</button></div>`).join('')||'<div class="hint">Hozircha kategoriya yoʻq.</div>'}<div class="cr" style="margin-top:10px"><input id="ncat" placeholder="Yangi oddiy kategoriya nomi" maxlength="30"><button class="btn p" data-a="cadd">+ Qoʻshish</button></div>`,false);
-const UN=['','kg','dona','litr','qop','pachka','tabaqa','blok'];
-const dish=(m,i)=>`<div class="box dish"><div class="dtop">${phs(m.img,'menu.'+i+'.img')}<div class="f" style="flex:1;min-width:0"><input data-p="menu.${i}.n" value="${esc(m.n)}" placeholder="Mahsulot nomi"><div class="f2"><select data-p="menu.${i}.c">${D.cats.includes(m.c)?'':`<option value="${esc(m.c)}" selected disabled>${m.c?esc(m.c):'Kategoriyani tanlang'}</option>`}${D.cats.map(c=>`<option value="${esc(c)}" ${m.c===c?'selected':''}>${esc(c)}</option>`).join('')}</select><input type="number" inputmode="numeric" data-p="menu.${i}.p" value="${m.p}" placeholder="Narxi (soʻm)"></div></div></div><input data-p="menu.${i}.d" value="${esc(m.d)}" placeholder="Qisqa tavsif (masalan: yangi hosil)" style="margin-top:8px"><div class="f2" style="margin-top:8px"><input data-p="menu.${i}.e" value="${esc(m.e||'')}" maxlength="8" placeholder="Belgi (emoji), masalan: 🍎"><select data-p="menu.${i}.u">${(UN.includes(m.u||'')?UN:[...UN,m.u]).map(u=>`<option value="${esc(u)}" ${(m.u||'')===u?'selected':''}>${u?'1 '+esc(u)+' narxi':'Birlik koʻrsatilmasin'}</option>`).join('')}</select></div><div class="r" style="margin-top:10px"><label class="chk"><input type="checkbox" data-p="menu.${i}.a" ${m.a?'checked':''}> Saytda koʻrsatish</label><button class="btn d" data-a="mdel" data-i="${i}">Oʻchirish</button></div></div>`;
-const prodAcc=(m,i)=>acc('m'+m.id,`<span class="th">${m.img?`<img src="${esc(m.img)}" alt="">`:esc(m.e||'🛒')}</span><span class="at">${esc(m.n)||'Yangi mahsulot'}</span>`,`${fmt(m.p)}${m.u?' / '+esc(m.u):''}`,dish(m,i),!m.n,m.a?'':'off');
-const menuV=()=>H('Mahsulotlar va kategoriyalarni shu yerda boshqarasiz. Oʻzgartirgach, pastdagi «Saqlash» tugmasini bosing.')+catV()+chips([['Hammasi','Hammasi ('+D.menu.length+')'],...D.cats.map(c=>[c,c])],MF,'mf')+(D.menu.map((m,i)=>MF==='Hammasi'||m.c===MF?prodAcc(m,i):'').join('')||'<div class="box">Bu kategoriyada mahsulot yoʻq. «+ Yangi mahsulot» tugmasi bilan qoʻshing.</div>')+`<div class="bar"><button class="btn" data-a="madd">+ Yangi mahsulot</button><span class="dirty ${DIRTY?'on':''}" id="dirty">${DIRTY?'Saqlanmagan oʻzgarishlar bor':'Hammasi saqlangan'}</span><button class="btn p" data-a="msave">Saqlash</button></div>`;
+
+const dish=(m,i)=>`<div class="dg"><div>${phs(m.img,'menu.'+i+'.img','big')}</div><div class="f"><div><label class="l">Mahsulot nomi</label><input data-p="menu.${i}.n" value="${esc(m.n)}" placeholder="Masalan: Olma (Samarqand)"></div><div class="f2"><div><label class="l">Kategoriya <i>*</i></label><select class="${m.c?'':'err'}" data-p="menu.${i}.c">${D.cats.includes(m.c)?'':`<option value="" selected disabled>Kategoriyani tanlang</option>`}${D.cats.map(c=>`<option value="${esc(c)}" ${m.c===c?'selected':''}>${esc(c)}</option>`).join('')}</select></div><div><label class="l">Narxi (soʻm)</label><input type="number" inputmode="numeric" data-p="menu.${i}.p" value="${m.p}" placeholder="14000"></div></div><div class="f2"><div><label class="l">Oʻlchov birligi</label><input data-p="menu.${i}.u" list="unl" maxlength="16" value="${esc(m.u||'')}" placeholder="kg, dona, litr… yoki oʻzingiz yozing"></div><div><label class="l">Belgi (emoji)</label><input data-p="menu.${i}.e" value="${esc(m.e||'')}" maxlength="8" placeholder="🍎"></div></div><div><label class="l">Qisqa tavsif</label><input data-p="menu.${i}.d" value="${esc(m.d)}" maxlength="120" placeholder="Masalan: yangi hosil"></div></div></div><div class="r dft"><label class="chk"><input type="checkbox" data-p="menu.${i}.a" ${m.a?'checked':''}> Saytda koʻrsatish</label><button class="btn d" data-a="mdel" data-i="${i}">Oʻchirish</button></div>`;
+const prodAcc=(m,i)=>acc('m'+m.id,`<span class="th">${m.img?`<img src="${esc(m.img)}" alt="">`:esc(m.e||'🛒')}</span><span class="at">${esc(m.n)||'Yangi mahsulot'}</span><span class="cbd ${m.c?'':'bad'}">${m.c?esc(m.c):'Kategoriyasiz'}</span>`,`${fmt(m.p)}${m.u?' / '+esc(m.u):''}`,dish(m,i),!m.n,m.a?'':'off');
+const menuV=()=>H('Mahsulotlar va kategoriyalarni shu yerda boshqarasiz. Oʻzgartirgach, pastdagi «Saqlash» tugmasini bosing.')+catV()+`<div class="mtool"><input id="msq" type="search" value="${esc(MQ)}" placeholder="Mahsulot qidirish…" autocomplete="off"></div>`+chips([['Hammasi','Hammasi ('+D.menu.length+')'],...D.cats.map(c=>[c,c])],MF,'mf')+`<div id="ml">${mlist()}</div><datalist id="unl">${QU.map(u=>`<option value="${u}">`).join('')}</datalist><div class="bar"><button class="btn" data-a="madd">+ Yangi mahsulot</button><span class="dirty ${DIRTY?'on':''}" id="dirty">${DIRTY?'Saqlanmagan oʻzgarishlar bor':'Hammasi saqlangan'}</span><button class="btn p" data-a="msave">Saqlash</button></div>`;
 const BGN={g:'Yashil',o:'Toʻq sariq',r:'Qizil',d:'Koʻk'};
 const slV=()=>H('Saytning eng tepasidagi katta bannerlar: aksiya va yangiliklar uchun. Sarlavhada <b>*yulduzcha*</b> ichiga olingan soʻz sariq boʻladi. Rasm qoʻymasangiz, rangga mos belgi chiqadi.')+D.slides.map((s,i)=>acc('s'+(s.id||i),`<span class="th">${s.i1?`<img src="${esc(s.i1)}" alt="">`:'🖼'}</span><span class="at">${esc(String(s.h||'Banner '+(i+1)).replace(/\*/g,''))}</span>`,s.a?'Koʻrinadi':'Yashirin',`<div class="box"><div class="r" style="margin-bottom:10px"><b>Banner ${i+1}</b><span><label><input type="checkbox" data-p="slides.${i}.a" ${s.a?'checked':''}> koʻrsatish</label> <button class="btn" data-a="sup" data-i="${i}" ${i?'':'disabled'}>↑</button> <button class="btn" data-a="sdn" data-i="${i}" ${i<D.slides.length-1?'':'disabled'}>↓</button> <button class="btn d" data-a="sdel" data-i="${i}">Oʻchirish</button></span></div>
 <div class="imgs"><div><label class="l">Rasm (ixtiyoriy)</label>${phs(s.i1,'slides.'+i+'.i1','big')}</div><div style="flex:1;min-width:200px"><label class="l">Rang</label><select data-p="slides.${i}.bg">${Object.entries(BGN).map(([v,t])=>`<option value="${v}" ${(s.bg||'g')===v?'selected':''}>${t}</option>`).join('')}</select><label class="l" style="margin-top:8px">Belgi (masalan: Aksiya, Yangilik)</label><input data-p="slides.${i}.k" value="${esc(s.k)}" maxlength="60"></div></div>
@@ -303,7 +364,7 @@ const ordTab=(nw,pr,ar,td)=>`<div class="st"><div class="box"><b>${nw}</b>Yangi<
 function view(){
   const nw=D.orders.filter(o=>o.st===0).length,pr=D.orders.filter(o=>o.st===1||o.st===2).length,ar=D.orders.filter(o=>o.st>=3).length,td=D.today||{n:0,s:0};
   const T={orders:'Buyurtmalar'+(nw?` (${nw})`:''),menu:'Mahsulotlar',stats:'Statistika',users:'Mijozlar',bc:'Xabarlar',site:'Bannerlar',pr:'Printerlar',set:'Sozlamalar'};
-  A.innerHTML=`<header><b>Sevimli Market · Panel</b><span><a href="/" target="_blank" rel="noopener">Saytni koʻrish</a> &nbsp; <button class="btn" data-a="lo">Chiqish</button></span></header><div class="w"><div class="tabs">${Object.entries(T).map(([k,v])=>`<button class="btn ${tab===k?'on':''}" data-a="tab" data-i="${k}">${v}</button>`).join('')}</div>
+  A.innerHTML=`<header><b><img src="/favicon.png" alt="">Sevimli Market<small>Boshqaruv paneli</small></b><span><a href="/" target="_blank" rel="noopener">Saytni koʻrish</a> &nbsp; <button class="btn" data-a="lo">Chiqish</button></span></header><div class="w"><div class="tabs">${Object.entries(T).map(([k,v])=>`<button class="btn ${tab===k?'on':''}" data-a="tab" data-i="${k}">${v}</button>`).join('')}</div>
 ${tab==='orders'?ordTab(nw,pr,ar,td):tab==='menu'?menuV():tab==='stats'?stV():tab==='pr'?prV():tab==='users'?uV():tab==='bc'?bcV():tab==='site'?slV():setV()}</div>`;
 }
 document.addEventListener('click',e=>{
@@ -329,9 +390,9 @@ document.addEventListener('click',e=>{
     else if(a==='prdel'){if(confirm('Printer oʻchirilsinmi?')){D.printers.splice(i,1);view()}}
     else if(a==='prsave'){const r=await api('/api/admin/printers',{printers:D.printers});D.printers=r.printers;toast('Printerlar saqlandi');view()}
     else if(a==='prtest'){const p=D.printers[i];if(p.t==='browser'){printBrowser(TESTO,true,p.id);return}const r0=await api('/api/admin/printers',{printers:D.printers});D.printers=r0.printers;const r=await api('/api/admin/print',{test:1,pid:p.id}),x=(r.res||[])[0];if(!x)throw new Error('Printer topilmadi');D.prlog.unshift({t:Date.now(),n:x.n,o:0,ok:x.ok,err:x.err});if(!x.ok)throw new Error(x.n+': '+x.err);toast('Test chek yuborildi');view()}
-    else if(a==='madd'){D.menu.unshift({id:Date.now(),n:'',c:MF!=='Hammasi'?MF:(D.cats[0]||''),p:0,u:'kg',d:'',a:1,img:'',e:''});markDirty();view()}
+    else if(a==='madd_old'){D.menu.unshift({id:Date.now(),n:'',c:MF!=='Hammasi'?MF:(D.cats[0]||''),p:0,u:'kg',d:'',a:1,img:'',e:''});markDirty();view()}
     else if(a==='mdel'){if(confirm('Mahsulot oʻchirilsinmi?')){D.menu.splice(i,1);markDirty();view()}}
-    else if(a==='msave'){
+    else if(a==='msave_old'){
       const bad=D.menu.findIndex(m=>!String(m.n).trim()||!(m.p>0)||!m.c);
       if(bad>=0){const m=D.menu[bad];MF='Hammasi';view();throw new Error(!m.c?'Mahsulot uchun kategoriyani tanlang':!String(m.n).trim()?'Mahsulot nomini yozing':`“${m.n}” mahsulotning narxini kiriting`)}
       const r=await api('/api/admin/menu',{menu:D.menu,cats:D.cats,groups:D.groups});D.menu=r.menu;D.cats=r.cats;D.groups=r.groups;DIRTY=false;view();toast('Saqlandi')}
@@ -365,6 +426,76 @@ document.addEventListener('click',e=>{
   });
 });
 document.addEventListener('change',e=>{const t=e.target;if(t.dataset&&t.dataset.s&&D)run(async()=>{await api('/api/admin/status',{id:+t.dataset.s,st:+t.value});const o=D.orders.find(x=>x.id==t.dataset.s);if(o)o.st=+t.value;if(+t.value===1&&o)printBrowser(o);toast(+t.value>=3?'Arxivga oʻtkazildi':'Holat yangilandi');view()})});
+/* ===== v2: tezkor qoʻshish, bitta ochiladigan qatorlar, qidiruv ===== */
+const QU=['kg','dona','litr','qop','pachka','tabaqa','blok','g','metr'];
+let MQ='',Q=null;
+const mlist=()=>{const q=MQ.trim().toLowerCase(),L=D.menu.map((m,i)=>[m,i]).filter(([m])=>(MF==='Hammasi'||m.c===MF)&&(!q||(m.n+' '+m.c).toLowerCase().includes(q)));
+  return L.map(([m,i])=>prodAcc(m,i)).join('')||'<div class="box empty">Mahsulot topilmadi. «+ Yangi mahsulot» tugmasi bilan qoʻshing.</div>'};
+async function saveMenu(){
+  const bad=D.menu.findIndex(m=>!String(m.n).trim()||!m.c||!(m.p>0));
+  if(bad>=0){const m=D.menu[bad];MF='Hammasi';MQ='';OPEN['m'+m.id]=true;view();
+    throw new Error(!String(m.n).trim()?'Mahsulot nomini yozing':!m.c?`“${m.n}” uchun kategoriyani tanlang`:`“${m.n}” mahsulotning narxini kiriting`)}
+  const r=await api('/api/admin/menu',{menu:D.menu,cats:D.cats,groups:D.groups,catimg:D.catimg});
+  D.menu=r.menu;D.cats=r.cats;D.groups=r.groups;D.catimg=r.catimg||D.catimg;DIRTY=false;
+}
+/* bitta qator ochilsa, qolganlari yopiladi */
+document.addEventListener('toggle',e=>{const d=e.target;if(!d.matches||!d.matches('details.acc')||!d.open||!d.parentElement)return;
+  [...d.parentElement.children].forEach(s=>{if(s!==d&&s.matches('details.acc[open]'))s.open=false});
+  setTimeout(()=>d.scrollIntoView({block:'nearest',behavior:'smooth'}),40)},true);
+document.addEventListener('input',e=>{const t=e.target;
+  if(t.id==='msq'){MQ=t.value;$('ml').innerHTML=mlist()}
+  if(t.id==='q_p')t.value=t.value.replace(/\D/g,'').replace(/\B(?=(\d{3})+(?!\d))/g,' ');
+  if(t.classList)t.classList.remove('err')});
+window.addEventListener('beforeunload',e=>{if(DIRTY){e.preventDefault();e.returnValue=''}});
+/* tezkor qoʻshish oynasi */
+const qRead=()=>{if(!Q)return;['n','p','u','d','e','nc','c'].forEach(k=>{const el=$('q_'+k);if(el)Q[k]=el.value})};
+function qShow(){
+  let h=$('qa');if(!h){h=document.createElement('div');h.id='qa';document.body.appendChild(h)}
+  h.innerHTML=`<div class="mo" data-a="qbg"><div class="md" role="dialog" aria-modal="true" aria-label="Yangi mahsulot"><div class="mh"><h3>Yangi mahsulot</h3><button class="btn ix" data-a="qclose" aria-label="Yopish">×</button></div><div class="mb">
+<div class="qt"><div class="ph" data-a="qimg">${Q.img?`<img src="${esc(Q.img)}" alt=""><button class="x" data-a="qimgx" title="Olib tashlash">×</button>`:'Rasm<br>qoʻshish'}</div><div><label class="l">Mahsulot nomi <i>*</i></label><input id="q_n" value="${esc(Q.n)}" maxlength="60" placeholder="Masalan: Olma (Samarqand)" autocomplete="off"></div></div>
+<div><label class="l">Kategoriya <i>*</i></label><select id="q_c"><option value="" disabled ${D.cats.includes(Q.c)?'':'selected'}>Kategoriyani tanlang</option>${D.cats.map(c=>`<option value="${esc(c)}" ${Q.c===c?'selected':''}>${esc(c)}</option>`).join('')}</select><input id="q_nc" value="${esc(Q.nc)}" maxlength="30" placeholder="Kerakli kategoriya yoʻqmi? Yangisining nomini yozing" style="margin-top:8px" autocomplete="off"></div>
+<div class="f2"><div><label class="l">Narxi (soʻm) <i>*</i></label><input id="q_p" inputmode="numeric" value="${esc(Q.p)}" placeholder="14 000" autocomplete="off"></div><div><label class="l">Oʻlchov birligi</label><input id="q_u" list="unl" value="${esc(Q.u)}" maxlength="16" placeholder="kg, dona, litr…" autocomplete="off"></div></div>
+<div class="uc">${QU.map(u=>`<button type="button" data-a="qu" data-i="${u}" class="${Q.u===u?'on':''}">${u}</button>`).join('')}</div>
+<div class="f2"><div><label class="l">Qisqa tavsif</label><input id="q_d" value="${esc(Q.d)}" maxlength="120" placeholder="Masalan: yangi hosil" autocomplete="off"></div><div><label class="l">Belgi (emoji)</label><input id="q_e" value="${esc(Q.e)}" maxlength="8" placeholder="🍎" autocomplete="off"></div></div>
+</div><div class="mf"><button class="btn" data-a="qclose">Bekor qilish</button><button class="btn" data-a="qsave2">Saqlash va yana qoʻshish</button><button class="btn p" data-a="qsave">Saqlash</button></div></div></div>`;
+  setTimeout(()=>{const n=$('q_n');if(n)n.focus()},30);
+}
+const qClose=()=>{Q=null;const h=$('qa');if(h)h.innerHTML=''};
+function qCheck(){
+  qRead();const n=Q.n.trim(),p=+String(Q.p).replace(/\D/g,''),nc=Q.nc.trim().slice(0,30);
+  let c=Q.c;if(nc)c=D.cats.find(x=>x.toLowerCase()===nc.toLowerCase())||nc;
+  const fail=(id,m)=>{const el=$(id);if(el){el.classList.add('err');el.focus()}throw new Error(m)};
+  if(!n)fail('q_n','Mahsulot nomini yozing');
+  if(!c)fail('q_c','Kategoriyani tanlang yoki yangisini yozing');
+  if(!(p>0))fail('q_p','Mahsulot narxini kiriting');
+  if(!D.cats.includes(c)){if(D.cats.length>=30)fail('q_nc','Kategoriyalar soni 30 tadan oshmasligi kerak');D.cats.push(c)}
+  return{id:Date.now(),n:n.slice(0,60),c,p,u:Q.u.trim().slice(0,16),d:Q.d.trim().slice(0,120),a:1,img:Q.img,e:Q.e.trim().slice(0,8)};
+}
+async function qSave(more){
+  const cats0=[...D.cats],it=qCheck();D.menu.unshift(it);
+  try{await saveMenu()}catch(e){D.menu=D.menu.filter(x=>x!==it);D.cats=cats0;throw e}
+  toast('Saqlandi: '+it.n);
+  if(more){Q={n:'',c:it.c,p:'',u:it.u,d:'',e:'',img:'',nc:''};qShow()}else{qClose();view()}
+}
+document.addEventListener('click',e=>{
+  const t=e.target.closest('[data-a]');if(!t||!D)return;const a=t.dataset.a;
+  if(!['madd','msave','qbg','qclose','qimg','qimgx','qu','qsave','qsave2'].includes(a))return;
+  if(a==='qbg'&&e.target!==t)return;
+  run(async()=>{
+    if(a==='madd'){Q={n:'',c:'',p:'',u:'',d:'',e:'',img:'',nc:''};qShow()}
+    else if(a==='msave'){await saveMenu();view();toast('Saqlandi')}
+    else if(a==='qclose'||a==='qbg')qClose();
+    else if(a==='qimg'){if(e.target.closest('.x'))return;qRead();const f=(await pickFiles(false))[0];if(!f)return;toast('Yuklanmoqda…');Q.img=await upload(f);qShow()}
+    else if(a==='qimgx'){qRead();Q.img='';qShow()}
+    else if(a==='qu'){const u=$('q_u');u.value=t.dataset.i;document.querySelectorAll('.uc button').forEach(b=>b.classList.toggle('on',b===t))}
+    else if(a==='qsave')await qSave(false);
+    else if(a==='qsave2')await qSave(true);
+  });
+});
+document.addEventListener('keydown',e=>{if(!Q)return;
+  if(e.key==='Escape')qClose();
+  else if(e.key==='Enter'&&/^q_[npude]$/.test(e.target.id||'')){e.preventDefault();run(()=>qSave(false))}});
+
 load(true).then(()=>{if(!D)login()});
 setInterval(()=>{if(D)load()},8000);
 </script>
