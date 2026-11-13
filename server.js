@@ -221,7 +221,13 @@ const esc=s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
 const IMG=new RegExp('^(/img/[\\w-]+\\.(?:jpg|webp)|/photos/[\\w-]+\\.jpg|https://commons\\.wikimedia\\.org/wiki/Special:FilePath/[\\w%.\\-]+(\\?width=\\d+)?'+(SB?'|'+esc(SB.u)+'/storage/v1/object/public/'+esc(SB.b)+'/[\\w-]+\\.(?:jpg|webp)':'')+')$');
 const okImg=s=>IMG.test(s||'')?s:'';
 const cleanMenu=(m,i)=>({id:Math.floor(+m.id)||Date.now()+i,n:cl(m.n,60),c:cl(m.c,30)||'Boshqa',p:Math.max(0,Math.floor(+m.p)||0),e:cl(m.e,8),u:cl(m.u,16),d:cl(m.d,120),a:m.a?1:0,img:okImg(m.img)});
-const cleanSlide=(s,i)=>({id:Math.floor(+s.id)||Date.now()+i,a:s.a?1:0,bg:['g','o','r','d'].includes(s.bg)?s.bg:'g',e:cl(s.e,12),k:cl(s.k,60),h:cl(s.h,120),p:cl(s.p,260),b:cl(s.b,30),l:/^(#[\w-]*|\/[\w\-\/]*)$/.test(s.l||'')?s.l:'#menu',i1:okImg(s.i1)});
+// Banner tugmasi nimani ochadi: menu (katalog) | cat (kategoriya: 'g:Asosiy' yoki 'c:Oddiy') | prod (mahsulot ID) | url (tashqi havola)
+const cleanLink=s=>{let t=['menu','cat','prod','url'].includes(s.lt)?s.lt:'menu',v=cl(s.lv,200);
+  if(t==='cat'){v=/^[gc]:/.test(v)?v.slice(0,2)+cl(v.slice(2),30):'';if(v.length<3)t='menu'}
+  else if(t==='prod'){const n=Math.floor(+v);if(n>0)v=String(n);else t='menu'}
+  else if(t==='url'){v=urlOk(v);if(!v)t='menu'}
+  if(t==='menu')v='';return{lt:t,lv:v}};
+const cleanSlide=(s,i)=>({id:Math.floor(+s.id)||Date.now()+i,a:s.a?1:0,bg:['g','o','r','d'].includes(s.bg)?s.bg:'g',e:cl(s.e,12),k:cl(s.k,60),h:cl(s.h,120),p:cl(s.p,260),b:cl(s.b,30),l:/^(#[\w-]*|\/[\w\-\/]*)$/.test(s.l||'')?s.l:'#menu',...cleanLink(s),i1:okImg(s.i1)});
 const cleanGroups=(a,cats)=>{const used=new Set();return(Array.isArray(a)?a:[]).slice(0,30).map(g=>({n:cl(g&&g.n,30),i:okImg(g&&g.i),cats:[...new Set((Array.isArray(g&&g.cats)?g.cats:[]).map(x=>cl(x,30)))].filter(c=>cats.includes(c)&&!used.has(c)&&used.add(c))})).filter(g=>g.n)};
 const cleanPrinters=a=>(Array.isArray(a)?a:[]).slice(0,10).map((p,i)=>({id:cl(p&&p.id,24).replace(/[^\w-]/g,'')||'p'+Date.now().toString(36)+i,n:cl(p&&p.n,40)||'Printer',t:p&&p.t==='browser'?'browser':'lan',ip:cl(p&&p.ip,40).replace(/[^\d.]/g,''),port:Math.min(65535,Math.max(1,Math.floor(+(p&&p.port))||9100)),w:p&&+p.w===80?80:58,c:Math.min(5,Math.max(1,Math.floor(+(p&&p.c))||1)),on:p&&p.on?1:0}));
 const cleanCatImg=(o,cats)=>{const r={};if(o&&typeof o==='object')for(const c of cats){const v=okImg(o[c]);if(v)r[c]=v}return r};
@@ -625,7 +631,11 @@ const server=http.createServer(async(req,res)=>{try{
     const items=raw.map(cleanMenu),cats=cleanCats(b.cats);
     for(const m of items)if(!cats.includes(m.c))cats.push(m.c); // kategoriyasi roʻyxatda yoʻq taom yoʻqolmasin
     db.menu=items;db.cats=cats.slice(0,30);db.catimg=cleanCatImg(b.catimg,db.cats);db.groups=cleanGroups(b.groups,db.cats);
-    try{await saveK('menu');await saveK('cats');await saveK('catimg');await saveK('groups')}catch(e){return fail(res,e)}gc();return send(res,200,{ok:1,menu:db.menu,cats:db.cats,catimg:db.catimg,groups:db.groups});
+    // nomi oʻzgargan kategoriyalar: bannerdagi tugma havolasi ham yangi nomga oʻtadi
+    const rn=b.renames&&typeof b.renames==='object'?b.renames:{};let sch=false;
+    for(const sl of db.slides){if(sl.lt!=='cat'||typeof sl.lv!=='string')continue;const k=sl.lv.slice(0,2),nm=sl.lv.slice(2),mp=k==='c:'?rn.c:k==='g:'?rn.g:null;
+      if(mp&&typeof mp==='object'&&Object.prototype.hasOwnProperty.call(mp,nm)){const nv=cl(mp[nm],30);if(nv){sl.lv=k+nv;sch=true}}}
+    try{await saveK('menu');await saveK('cats');await saveK('catimg');await saveK('groups');if(sch)await saveK('slides')}catch(e){return fail(res,e)}gc();return send(res,200,{ok:1,menu:db.menu,cats:db.cats,catimg:db.catimg,groups:db.groups,slides:db.slides});
   }
   if(u==='/api/admin/bc/send')return bcStart(b,res);
   if(u==='/api/admin/bc/cancel'){if(bc.job&&bc.job.state==='running')bc.job.cancel=true;return send(res,200,{ok:1})}
