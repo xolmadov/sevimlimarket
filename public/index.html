@@ -118,6 +118,7 @@ input.f,textarea{width:100%;padding:13px 14px;border:1px solid var(--ln);border-
 .mp .leaflet-bottom{bottom:var(--sh,230px)}
 .mpc{font-size:12px;color:#8a93a6;margin:-4px 0 10px}.mpc.w{color:#c0392b}
 .leaflet-container{font-family:Manrope,system-ui,sans-serif}
+html,body{overscroll-behavior-y:none}
 </style>
 </head>
 <body>
@@ -574,7 +575,10 @@ function initApp(){
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)loadMy()});
   loadMy().then(()=>{if(/[?&]open=orders/.test(location.search))openAx()});
 }
-if(inTG)loadScript('https://telegram.org/js/telegram-web-app.js').then(()=>{TW=window.Telegram&&Telegram.WebApp;if(TW){try{TW.ready();TW.expand();TW.setHeaderColor('#ffffff');TW.setBackgroundColor('#f4f6f0')}catch(e){}if(TW.initData)INIT=TW.initData}}).catch(()=>{}).then(initApp);
+if(inTG)loadScript('https://telegram.org/js/telegram-web-app.js').then(()=>{TW=window.Telegram&&Telegram.WebApp;if(TW){try{TW.ready();TW.expand();TW.setHeaderColor('#ffffff');TW.setBackgroundColor('#f4f6f0')}catch(e){}
+  /* pastga surilganda ilova yopilib qolmasin; X bosilsa Telegram "chiqmoqchimisiz?" deb soʻraydi */
+  try{if(TW.disableVerticalSwipes)TW.disableVerticalSwipes()}catch(e){}
+  try{if(TW.enableClosingConfirmation)TW.enableClosingConfirmation()}catch(e){}if(TW.initData)INIT=TW.initData}}).catch(()=>{}).then(initApp);
 fetch('/api/slides').then(r=>r.json()).then(buildSlides).catch(()=>buildSlides([]));
 Promise.all([fetch('/api/menu').then(r=>r.json()),fetch('/api/cats').then(r=>r.json()).catch(()=>[]),fetch('/api/groups').then(r=>r.json()).catch(()=>[])]).then(([m,c,gp])=>{menu=m;GRP=Array.isArray(gp)?gp:[];ORD=[];CATI={};(Array.isArray(c)?c:[]).forEach(x=>{ORD.push(x.n);if(x.i)CATI[x.n]=x.i});draw()}).catch(()=>{$('sections').innerHTML='<p class="mut">Katalog yuklanmadi. Sahifani yangilang.</p>'});
 </script>
