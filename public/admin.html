@@ -157,11 +157,13 @@ label.l{font-size:12.5px;font-weight:700;color:var(--mut);margin:0 0 5px}label.l
 .pgh{font-size:12px;font-weight:800;color:var(--mut);text-transform:uppercase;letter-spacing:.04em;margin:8px 0 0}
 .pit:hover{border-color:#b9c9a0;background:#fbfcf8}.pit.on{border-color:var(--y);background:var(--gl)}.ck{font-style:normal;color:var(--yd);font-weight:800;width:18px;text-align:center;flex:none}
 #lpw .mtool{margin:0}
+.ifx{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;border:1.5px dashed #b9c9a0;background:#fbfdf6}.ifxt{display:grid;gap:3px;flex:1;min-width:220px}.ifxt b{font-size:15px}.ifxt span{color:var(--mut);font-size:13px;line-height:1.45}
 @media(max-width:420px){.seg{grid-template-columns:1fr 1fr}.pc2{display:none}}
 </style>
 </head>
 <body>
 <div id="app"></div><div id="toast"></div>
+<script src="/fx.js"></script>
 <script>
 const $=i=>document.getElementById(i),A=$('app');
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -214,9 +216,19 @@ async function toWebp(file){
   // Rasmni brauzerning oʻzida WebP'ga oʻtkazadi; brauzer WebP bermasa JPG qaytadi (server ikkalasini ham qabul qiladi)
   return toJpeg(file,'image/webp',.82);
 }
-async function upload(file){
-  let data;try{data=await toWebp(file)}catch(e){throw new Error('Rasmni oʻqib boʻlmadi: '+file.name+'. JPG yoki PNG fayl tanlang.')}
-  const d=await api('/api/admin/upload',{data});return d.url;
+async function openBitmap(file){
+  try{return await createImageBitmap(file,{imageOrientation:'from-image'})}catch(e){}
+  try{return await createImageBitmap(file)}catch(e){}
+  return new Promise((ok,no)=>{const im=new Image();im.onload=()=>ok(im);im.onerror=no;im.src=URL.createObjectURL(file)});
+}
+const loadImg=u=>new Promise((ok,no)=>{const i=new Image();i.crossOrigin='anonymous';i.onload=()=>ok(i);i.onerror=()=>no(new Error('Rasm yuklanmadi'));i.src=u});
+const sqData=c=>{let d=c.toDataURL('image/webp',.85);if(d.indexOf('data:image/webp')!==0)d=c.toDataURL('image/jpeg',.88);return d};
+/* sq=true: mahsulot rasmi, bir xil kvadrat kadrga tayyorlanadi (mijoz saytida bir zumda va bir xil chiqadi) */
+async function upload(file,sq){
+  let data;
+  try{data=sq?sqData(SQ.build(await openBitmap(file),800)):await toWebp(file)}
+  catch(e){throw new Error('Rasmni oʻqib boʻlmadi: '+file.name+'. JPG yoki PNG fayl tanlang.')}
+  const d=await api('/api/admin/upload',{data,sq:sq?1:0});return d.url;
 }
 /* ---- koʻrinishlar ---- */
 const LGN={acc:'Qabul qildi',cook:'Yigʻishni boshladi',rdy:'Tayyor qildi',cl:'Kuryer qabul qildi',way:'Yoʻlga chiqdi',dl:'Yetkazdi',cx:'Bekor qildi'},RTN={a:'admin chati',c:'kuryer chati',p:'panel'};
@@ -251,7 +263,7 @@ const catV=()=>grpV()+acc('cats','<span class="th">'+IC.tag+'</span><span class=
 
 const dish=(m,i)=>`<div class="dg"><div>${phs(m.img,'menu.'+i+'.img','big')}</div><div class="f"><div><label class="l">Mahsulot nomi</label><input data-p="menu.${i}.n" value="${esc(m.n)}" placeholder="Masalan: Olma (Samarqand)"></div><div class="f2"><div><label class="l">Kategoriya <i>*</i></label><select class="${m.c?'':'err'}" data-p="menu.${i}.c">${D.cats.includes(m.c)?'':`<option value="" selected disabled>Kategoriyani tanlang</option>`}${D.cats.map(c=>`<option value="${esc(c)}" ${m.c===c?'selected':''}>${esc(c)}</option>`).join('')}</select></div><div><label class="l">Narxi (soʻm)</label><input type="number" inputmode="numeric" data-p="menu.${i}.p" value="${m.p}" placeholder="14000"></div></div><div class="f2"><div><label class="l">Oʻlchov birligi</label><input data-p="menu.${i}.u" list="unl" maxlength="16" value="${esc(m.u||'')}" placeholder="kg, dona, litr… yoki oʻzingiz yozing"></div><div><label class="l">Belgi (emoji)</label><input data-p="menu.${i}.e" value="${esc(m.e||'')}" maxlength="8" placeholder="🍎"></div></div><div><label class="l">Qisqa tavsif</label><input data-p="menu.${i}.d" value="${esc(m.d)}" maxlength="120" placeholder="Masalan: yangi hosil"></div></div></div><div class="r dft"><label class="chk"><input type="checkbox" data-p="menu.${i}.a" ${m.a?'checked':''}> Saytda koʻrsatish</label><button class="btn d" data-a="mdel" data-i="${i}">Oʻchirish</button></div>`;
 const prodAcc=(m,i,sc)=>acc('m'+m.id,`<span class="th">${m.img?`<img src="${esc(m.img)}" alt="">`:m.e?esc(m.e):IC.box}</span><span class="at">${esc(m.n)||'Yangi mahsulot'}</span>${sc?`<span class="cbd ${m.c?'':'bad'}">${m.c?esc(m.c):'Kategoriyasiz'}</span>`:''}`,`${fmt(m.p)}${m.u?' / '+esc(m.u):''}`,dish(m,i),!m.n,m.a?'':'off');
-const menuV=()=>H('Mahsulotlar va kategoriyalarni shu yerda boshqarasiz. Kategoriyani bosib oching: ichidagi barcha mahsulotlar koʻrinadi. Oʻzgartirgach, pastdagi «Saqlash» tugmasini bosing.')+catV()+`<div class="sec"><h3>Mahsulotlar</h3><span>${D.menu.length} ta mahsulot · ${D.cats.length} ta kategoriya</span></div><div class="mtool">${IC.srch}<input id="msq" type="search" value="${esc(MQ)}" placeholder="Mahsulot qidirish…" autocomplete="off"></div><div id="ml">${mlist()}</div><datalist id="unl">${QU.map(u=>`<option value="${u}">`).join('')}</datalist><div class="bar"><button class="btn" data-a="madd">+ Yangi mahsulot</button><span class="dirty ${DIRTY?'on':''}" id="dirty">${DIRTY?'Saqlanmagan oʻzgarishlar bor':'Hammasi saqlangan'}</span><button class="btn p" data-a="msave">Saqlash</button></div>`;
+const menuV=()=>H('Mahsulotlar va kategoriyalarni shu yerda boshqarasiz. Kategoriyani bosib oching: ichidagi barcha mahsulotlar koʻrinadi. Oʻzgartirgach, pastdagi «Saqlash» tugmasini bosing.')+catV()+ifxV()+`<div class="sec"><h3>Mahsulotlar</h3><span>${D.menu.length} ta mahsulot · ${D.cats.length} ta kategoriya</span></div><div class="mtool">${IC.srch}<input id="msq" type="search" value="${esc(MQ)}" placeholder="Mahsulot qidirish…" autocomplete="off"></div><div id="ml">${mlist()}</div><datalist id="unl">${QU.map(u=>`<option value="${u}">`).join('')}</datalist><div class="bar"><button class="btn" data-a="madd">+ Yangi mahsulot</button><span class="dirty ${DIRTY?'on':''}" id="dirty">${DIRTY?'Saqlanmagan oʻzgarishlar bor':'Hammasi saqlangan'}</span><button class="btn p" data-a="msave">Saqlash</button></div>`;
 const BGN={g:'Yashil',o:'Toʻq sariq',r:'Qizil',d:'Koʻk'};
 const slV=()=>H('Saytning eng tepasidagi katta bannerlar: aksiya va yangiliklar uchun. Sarlavhada <b>*yulduzcha*</b> ichiga olingan soʻz sariq boʻladi. Rasm qoʻymasangiz, rangga mos belgi chiqadi. Tugma bosilganda katalog, tanlangan kategoriya, mahsulot yoki havola ochilishini oʻzingiz belgilaysiz.')+D.slides.map((s,i)=>acc('s'+(s.id||i),`<span class="th">${s.i1?`<img src="${esc(s.i1)}" alt="">`:IC.img}</span><span class="at">${esc(String(s.h||'Banner '+(i+1)).replace(/\*/g,''))}</span>`,s.a?'Koʻrinadi':'Yashirin',`<div class="box"><div class="r" style="margin-bottom:10px"><b>Banner ${i+1}</b><span><label><input type="checkbox" data-p="slides.${i}.a" ${s.a?'checked':''}> koʻrsatish</label> <button class="btn" data-a="sup" data-i="${i}" ${i?'':'disabled'}>↑</button> <button class="btn" data-a="sdn" data-i="${i}" ${i<D.slides.length-1?'':'disabled'}>↓</button> <button class="btn d" data-a="sdel" data-i="${i}">Oʻchirish</button></span></div>
 <div class="imgs"><div><label class="l">Rasm (ixtiyoriy)</label>${phs(s.i1,'slides.'+i+'.i1','big')}</div><div style="flex:1;min-width:200px"><label class="l">Rang</label><select data-p="slides.${i}.bg">${Object.entries(BGN).map(([v,t])=>`<option value="${v}" ${(s.bg||'g')===v?'selected':''}>${t}</option>`).join('')}</select><label class="l" style="margin-top:8px">Belgi (masalan: Aksiya, Yangilik)</label><input data-p="slides.${i}.k" value="${esc(s.k)}" maxlength="60"></div></div>
@@ -410,7 +422,7 @@ document.addEventListener('click',e=>{
     else if(a==='sgo'){SS.from=$('sf').value;SS.to=$('sto').value;loadStats()}
     else if(a==='lo'){await api('/api/admin/logout',{});D=null;login()}
     else if(a==='resend'){const r=await api('/api/admin/resend',{id:i});toast(r.ok?'Telegramga yuborildi':'Yuborib boʻlmadi. Sozlamalarda testni tekshiring',!r.ok);await load(true)}
-    else if(a==='img'){if(e.target.closest('.x'))return;const f=(await pickFiles(false))[0];if(!f)return;toast('Yuklanmoqda…');setP(D,p,await upload(f));view();toast('Rasm yuklandi')}
+    else if(a==='img'){if(e.target.closest('.x'))return;const f=(await pickFiles(false))[0];if(!f)return;toast('Yuklanmoqda…');setP(D,p,await upload(f,/^menu\./.test(p)));view();toast('Rasm yuklandi')}
     else if(a==='imgx'){setP(D,p,'');view()}
     else if(a==='gimg'){const f=(await pickFiles(false))[0];if(!f)return;toast('Yuklanmoqda…');D.groups[i].i=await upload(f);markDirty();view()}
     else if(a==='gimgx'){D.groups[i].i='';markDirty();view()}
@@ -439,6 +451,17 @@ document.addEventListener('click',e=>{
     else if(a==='sadd'){D.slides.push({id:Date.now(),a:1,bg:'g',e:'',k:'Aksiya',h:'Yangi *banner*',p:'',b:'Xarid qilish',l:'#menu',lt:'menu',lv:'',i1:''});view()}
     else if(a==='sdel'){if(confirm('Slayd oʻchirilsinmi?')){D.slides.splice(i,1);view()}}
     else if(a==='sup'||a==='sdn'){const j=a==='sup'?i-1:i+1;[D.slides[i],D.slides[j]]=[D.slides[j],D.slides[i]];view()}
+    else if(a==='imgfix'){
+      const L=D.menu.filter(m=>m.img&&!SQ.done(m.img));if(!L.length||IFX.run)return;
+      IFX={run:1,done:0,total:L.length,fail:0};view();
+      const st=()=>{const e=$('ifs');if(e)e.textContent='Tayyorlanmoqda: '+IFX.done+' / '+IFX.total+(IFX.fail?' (oʻqilmadi: '+IFX.fail+')':'')};
+      for(const m of L){
+        try{const r=await api('/api/admin/upload',{data:sqData(SQ.build(await loadImg(m.img),800)),sq:1});m.img=r.url}catch(err){IFX.fail++}
+        IFX.done++;st()}
+      const fail=IFX.fail;IFX.run=0;
+      try{await saveMenu()}catch(err){view();throw err}
+      view();toast(fail?'Tayyor. '+fail+' ta rasmni oʻqib boʻlmadi, ular oldingidek qoldi':'Hamma rasm tayyorlandi va saqlandi')
+    }
     else if(a==='slt'){const sl=D.slides[i],ty=t.dataset.t;if((sl.lt||'menu')!==ty){sl.lt=ty;sl.lv='';sl.l='#menu'}view();if(ty==='cat'||ty==='prod'){LP={i,t:ty,q:''};lpShow()}}
     else if(a==='lpick'){LP={i,t:t.dataset.t,q:''};lpShow()}
     else if(a==='lpset'){const j=LP.i;D.slides[j].lv=t.dataset.v;lpClose();view()}
@@ -537,7 +560,7 @@ document.addEventListener('click',e=>{
     if(a==='madd'){Q={n:'',c:t.dataset.cn||'',p:'',u:'',d:'',e:'',img:'',nc:''};qShow()}
     else if(a==='msave'){await saveMenu();view();toast('Saqlandi')}
     else if(a==='qclose'||a==='qbg')qClose();
-    else if(a==='qimg'){if(e.target.closest('.x'))return;qRead();const f=(await pickFiles(false))[0];if(!f)return;toast('Yuklanmoqda…');Q.img=await upload(f);qShow()}
+    else if(a==='qimg'){if(e.target.closest('.x'))return;qRead();const f=(await pickFiles(false))[0];if(!f)return;toast('Yuklanmoqda…');Q.img=await upload(f,true);qShow()}
     else if(a==='qimgx'){qRead();Q.img='';qShow()}
     else if(a==='qu'){const u=$('q_u');u.value=t.dataset.i;document.querySelectorAll('.uc button').forEach(b=>b.classList.toggle('on',b===t))}
     else if(a==='qsave')await qSave(false);
@@ -550,6 +573,9 @@ document.addEventListener('keydown',e=>{if(!Q)return;
 
 /* ===== v3: kategoriya nomlari oʻzgarishi va banner tugmasi havolasi ===== */
 const REN={c:{},g:{}};
+let IFX={run:0,done:0,total:0,fail:0};
+const ifxV=()=>{const n=D.menu.filter(m=>m.img&&!SQ.done(m.img)).length;if(!n&&!IFX.run)return'';
+  return `<div class="box ifx"><div class="ifxt"><b>Mahsulot rasmlarini tayyorlash</b><span id="ifs">${IFX.run?'Tayyorlanmoqda: '+IFX.done+' / '+IFX.total:n+' ta rasm hali tayyorlanmagan. Tayyorlangach mijoz saytida rasmlar bir zumda, bir xil va toʻliq chiqadi.'}</span></div><button class="btn p" data-a="imgfix" ${IFX.run?'disabled':''}>${IFX.run?'Kuting…':'Hammasini tayyorlash'}</button></div>`};
 const renTrack=(kind,old,nv)=>{const m=REN[kind],k=Object.keys(m).find(x=>m[x]===old);if(k)m[k]=nv;else m[old]=nv;if(m[k||old]===(k||old))delete m[k||old]};
 const LT=[['menu','Katalog'],['cat','Kategoriya'],['prod','Mahsulot'],['url','Havola']];
 const lkSel=sl=>{const t=sl.lt||'menu',v=String(sl.lv||'');
