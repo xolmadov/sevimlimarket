@@ -541,7 +541,6 @@ const server=http.createServer(async(req,res)=>{try{
     if(u==='/healthz')return send(res,200,{ok:1,db:SB?'supabase':'local'});
     if(u==='/')return page(res,'index.html',{},true);
     if(u===AP)return page(res,'admin.html',{'x-robots-tag':'noindex, nofollow','cache-control':'no-store','referrer-policy':'same-origin'});
-    if(u==='/fx.js')return sendFile(res,path.join(PUB,'fx.js'),'application/javascript; charset=utf-8',{'cache-control':'public, max-age=300'});
     if(u==='/logo.png'||u==='/favicon.png')return sendFile(res,path.join(PUB,u),'image/png',{'cache-control':'public, max-age=86400'});
     let m;
     if(!SB&&(m=u.match(/^\/img\/([\w-]+\.(?:jpg|webp))$/)))return sendFile(res,path.join(UP,m[1]),/\.webp$/.test(m[1])?'image/webp':'image/jpeg',{'cache-control':'public, max-age=2592000'});
