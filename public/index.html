@@ -119,6 +119,7 @@ input.f,textarea{width:100%;padding:13px 14px;border:1px solid var(--ln);border-
 .mpc{font-size:12px;color:#8a93a6;margin:-4px 0 10px}.mpc.w{color:#c0392b}
 .leaflet-container{font-family:Manrope,system-ui,sans-serif}
 html,body{overscroll-behavior-y:none}
+.pi.pfull img{object-fit:cover}.dsi.pfull img{object-fit:cover;mix-blend-mode:normal}
 </style>
 </head>
 <body>
@@ -183,6 +184,46 @@ $('pv').onclick=()=>{go(si-1);play()};$('nx').onclick=()=>{go(si+1);play()};
 $('dots').onclick=e=>{const b=e.target.closest('button');if(b){go(+b.dataset.s);play()}};
 let tx=0;const hr=$('top');hr.addEventListener('touchstart',e=>{tx=e.touches[0].clientX},{passive:true});hr.addEventListener('touchend',e=>{const d=e.changedTouches[0].clientX-tx;if(Math.abs(d)>50){go(si+(d<0?1:-1));play()}});
 document.addEventListener('visibilitychange',()=>{if(document.hidden)clearInterval(tm);else play()});
+/* ====== Rasm fonini tekislash ======
+   oq fon            -> tegilmaydi
+   bir xil rangli fon (kulrang, och yashil...) -> oqqa almashtiriladi, mahsulot kartaga qoʻshilib ketadi
+   fonli surat/foto  -> katakni toʻliq toʻldiradi (cover), chiroyli kvadrat boʻlib turadi */
+const FX=new Map();
+function fxAnalyze(src){const W=src.naturalWidth||src.width,H=src.naturalHeight||src.height;if(!W||!H)return{t:'white'};
+  const k=Math.min(1,640/Math.max(W,H)),w=Math.max(2,Math.round(W*k)),h=Math.max(2,Math.round(H*k));
+  const cv=document.createElement('canvas');cv.width=w;cv.height=h;const cx=cv.getContext('2d',{willReadFrequently:true});cx.drawImage(src,0,0,w,h);
+  const img=cx.getImageData(0,0,w,h),px=img.data,B=[];
+  for(let b=0;b<2;b++){for(let x=0;x<w;x++){B.push((b*w+x)*4,((h-1-b)*w+x)*4)}for(let y=0;y<h;y++){B.push((y*w+b)*4,(y*w+w-1-b)*4)}}
+  let white=0;const med=[0,0,0];
+  for(const i of B)if(px[i+3]<128||(px[i]>=246&&px[i+1]>=246&&px[i+2]>=246))white++;
+  if(white/B.length>=.82)return{t:'white'};
+  for(let c=0;c<3;c++){const v=B.map(i=>px[i+c]).sort((a,b)=>a-b);med[c]=v[v.length>>1]}
+  const df=i=>Math.max(Math.abs(px[i]-med[0]),Math.abs(px[i+1]-med[1]),Math.abs(px[i+2]-med[2]));
+  let uni=0;for(const i of B)if(df(i)<=28)uni++;
+  if(uni/B.length<.88)return{t:'photo'};
+  const T=34,m=new Uint8Array(w*h),q=[];
+  const seed=(x,y)=>{const j=y*w+x;if(!m[j]&&df(j*4)<=T){m[j]=1;q.push(j)}};
+  for(let x=0;x<w;x++){seed(x,0);seed(x,h-1)}for(let y=0;y<h;y++){seed(0,y);seed(w-1,y)}
+  for(let n=0;n<q.length;n++){const j=q[n],x=j%w,y=(j/w)|0;
+    if(x>0)seed(x-1,y);if(x<w-1)seed(x+1,y);if(y>0)seed(x,y-1);if(y<h-1)seed(x,y+1)}
+  if(q.length/(w*h)>.94)return{t:'photo'};
+  for(let j=0;j<w*h;j++){const i=j*4;
+    if(m[j]){px[i]=px[i+1]=px[i+2]=255;px[i+3]=255;continue}
+    const x=j%w,y=(j/w)|0;
+    if((x>0&&m[j-1])||(x<w-1&&m[j+1])||(y>0&&m[j-w])||(y<h-1&&m[j+w])){const d=df(i);
+      if(d<=T+36){const f=1-(d-T)/36;for(let c=0;c<3;c++)px[i+c]=Math.round(px[i+c]+(255-px[i+c])*f)}}
+    px[i+3]=255}
+  cx.putImageData(img,0,0);
+  return{t:'flat',url:cv.toDataURL('image/jpeg',.92)}}
+function fxProbe(im){ /* avval koʻrinib turgan rasmning oʻzidan, CORS boʻlmasa CORS-li nusxadan oʻqiymiz */
+  return new Promise(res=>{try{res(fxAnalyze(im))}catch(e){
+    const c=new Image();c.crossOrigin='anonymous';c.onload=()=>{try{res(fxAnalyze(c))}catch(_){res({t:'white'})}};c.onerror=()=>res({t:'white'});c.src=im.currentSrc||im.src}})}
+document.addEventListener('load',e=>{const im=e.target;if(!im||im.tagName!=='IMG'||im.dataset.fx)return;
+  const box=im.closest('.pi,.dsi');if(!box)return;im.dataset.fx='1';
+  const src=im.getAttribute('src'),apply=r=>{if(r.t==='photo')box.classList.add('pfull');else if(r.t==='flat'&&im.isConnected)im.src=r.url};
+  let r=FX.get(src);if(r&&r.t){apply(r);return}
+  if(!r){r=fxProbe(im).then(x=>{FX.set(src,x);return x});FX.set(src,r)}
+  r.then(apply)},true);
 function imgErr(i){const p=i.parentNode;p.classList.add('ph');const e=document.createElement('i');e.textContent=i.dataset.m||'';i.replaceWith(e)}
 document.addEventListener('error',e=>{const i=e.target;if(i&&i.tagName==='IMG'&&i.dataset&&i.dataset.m!==undefined)imgErr(i)},true);
 const CEM=[['meva','🍎'],['sabzavot','🥕'],['sut','🥛'],['goʻsht','🥩'],['parranda','🍗'],['baliq','🐟'],['non','🍞'],['qandolat','🍪'],['shirin','🍫'],['yormа','🌾'],['yorma','🌾'],['bakaleya','🌾'],['un ','🌾'],['yogʻ','🫒'],['ziravor','🧂'],['ichimlik','🥤'],['suv','💧'],['choy','🍵'],['qahva','☕'],['tuxum','🥚'],['konserva','🥫'],['muzlat','🧊'],['uy-roʻzgʻor','🧴'],['tozalik','🧴']];
