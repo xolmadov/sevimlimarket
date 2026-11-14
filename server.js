@@ -541,6 +541,7 @@ const server=http.createServer(async(req,res)=>{try{
     if(u==='/healthz')return send(res,200,{ok:1,db:SB?'supabase':'local'});
     if(u==='/')return page(res,'index.html',{},true);
     if(u===AP)return page(res,'admin.html',{'x-robots-tag':'noindex, nofollow','cache-control':'no-store','referrer-policy':'same-origin'});
+    if(u==='/fx.js')return sendFile(res,path.join(PUB,'fx.js'),'application/javascript; charset=utf-8',{'cache-control':'public, max-age=300'});
     if(u==='/logo.png'||u==='/favicon.png')return sendFile(res,path.join(PUB,u),'image/png',{'cache-control':'public, max-age=86400'});
     let m;
     if(!SB&&(m=u.match(/^\/img\/([\w-]+\.(?:jpg|webp))$/)))return sendFile(res,path.join(UP,m[1]),/\.webp$/.test(m[1])?'image/webp':'image/jpeg',{'cache-control':'public, max-age=2592000'});
@@ -646,7 +647,7 @@ const server=http.createServer(async(req,res)=>{try{
     const buf=Buffer.from(m[2],'base64');if(buf.length>4e6)return send(res,413,{error:'Rasm juda katta'});
     const isWebp=buf.length>12&&buf.toString('latin1',0,4)==='RIFF'&&buf.toString('latin1',8,12)==='WEBP',isJpg=buf[0]===0xff&&buf[1]===0xd8&&buf[2]===0xff;
     if(m[1]==='webp'?!isWebp:!isJpg)return send(res,400,{error:'Bu rasm fayli emas'});
-    const f=crypto.randomBytes(8).toString('hex')+(isWebp?'.webp':'.jpg');
+    const f=(b.sq?'sq-':'')+crypto.randomBytes(8).toString('hex')+(isWebp?'.webp':'.jpg'); // sq- : kvadratga tayyorlangan mahsulot rasmi
     try{if(SB)return send(res,200,{url:await sbUpload(f,buf)});fs.writeFileSync(path.join(UP,f),buf);return send(res,200,{url:'/img/'+f})}catch(e){return fail(res,e)}
   }
   if(u==='/api/admin/printers'&&Array.isArray(b.printers)){
